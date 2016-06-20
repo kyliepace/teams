@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" ng-app>
+  <head>
+    <title>Teams</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Sriracha" rel="stylesheet">
+    <link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.min.css">
+  </head>
+  <body>
+    <header>
+      <div class="content">
+        <h5 id="login">Log In</h5>
+        <h1>GO TEAMNAME!</h1>
+      </div>
+    </header>
+    <section id="next">
+      <h4>Next Game</h4>
+      <div class="games">
+        <div class="game">
+          <p class="opponent">SCS Enviro Services</p>
+          <p class="date">June 22, 2016</p>
+          <p class="time">5:30pm</p>
+          <p class="location">Land Park Field #3</p>
+        </div>
+        <!-- if a new game gets this place, move this current game property to upcoming -->
+      </div>
+    </section>
+    
+    
+    <!--  /////// MAP /////////// -->
+    <div id="mapOverlay">
+    <section id="map">
+      
+        <h4>Directions</h4>
+      
+    </section>
+    </div>
+    
+    <!-- ////// ROSTER ///////////// -->
+    
+    <section id="roster">
+      <h4>Team Roster</h4>
+      
+        <div id="players">
+          <div class="player 1">
+            <h5>Player 1</h5>
+            <i class="fa fa-square-o" aria-hidden="true"></i>
+          </div>
+          
+          <div class="player 2">
+            <h5>Player 1</h5>
+            <p><i class="fa fa-square-o" aria-hidden="true"></i></p>
+          </div>
+          
+          <div class="player 3">
+            <h5>Player 1</h5>
+            <p><i class="fa fa-square-o" aria-hidden="true"></i></p>
+          </div>
+        
+      </div>
+    </section>
+    
+    <section id="upcoming">
+      <h4>Upcoming Games</h4>
+      <div class="games">
+        <!-- append more games here -->
+      </div>
+      
+    </section>
+    
+    
+    
+    <section id="past">
+      <h4>Past Games</h4>
+      <div class="games">
+        <div class="game">
+          <p class="opponent">Lionysus</p>
+          <p class="date">June 10, 2016</p>
+          <p class="time">7:00pm</p>
+          <p class="location">Roseville</p>
+        </div>
+        
+        <div class="game">
+          <p class="opponent">AECOM</p>
+          <p class="date">June 12, 2016</p>
+          <p class="time">5:00pm</p>
+          <p class="location">Roseville</p>
+        </div>
+        
+        <div class="game">
+          <p class="opponent">Aerostar</p>
+          <p class="date">June 18, 2016</p>
+          <p class="time">6:00pm</p>
+          <p class="location">Land Park Field #6</p>
+        </div>
+        
+        <!-- append more games here -->
+        
+      </div>
+    </section>
+    
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+  </body>
+</html>

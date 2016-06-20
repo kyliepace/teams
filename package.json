@@ -1,0 +1,25 @@
+{
+  "name": "teams",
+  "version": "0.0.0",
+  "description": "thinkful capstone project",
+  "main": "server.js",
+  "author": "Kylie Pace",
+  "dependencies": {
+    "async": "~0.2.8",
+    "express": "~3.2.4",
+    "font-awesome": "^4.6.3",
+    "socket.io": "~0.9.14"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "less": "npm run lessc --source-map client/css/style.less client/css/style.css"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "thinkful",
+    "node.js",
+    "softball",
+    "users"
+  ],
+  "license": "ISC"
+}

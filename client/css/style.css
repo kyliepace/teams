@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  padding: 0;
+  text-color: #0D042B;
+  font-family: 'Sriracha', cursive;
+}
+h4 {
+  font-size: 30px;
+}
+header {
+  padding: 20px;
+  background-color: #133582;
+  color: #FEF5E8;
+  width: 100%;
+}
+header .content {
+  display: flex;
+  align-items: flex-end;
+}
+header .content h1 {
+  margin: auto;
+  padding-right: 50px;
+}
+section {
+  text-align: center;
+  line-height: 8px;
+  width: 100%;
+  margin: auto;
+  background-color: #FEF5E8;
+  overflow: auto;
+}
+.games {
+  display: flex;
+  max-width: 1000px;
+  margin: auto;
+  padding-bottom: 20px;
+}
+.game {
+  border: 1px solid black;
+  width: 200px;
+  height: 150px;
+  margin: auto;
+}
+#mapOverlay {
+  background: #ffffff;
+}
+#mapOverlay #map {
+  height: 300px;
+  background-image: url("https://maps.googleapis.com/maps/api/staticmap?center=Sacramento,+CA&maptype=terrain&visual_refresh=true&scale=2&size=4000x300&markers=size:small%7Ccolor:0xff0000%7Clabel:1%7CSacramento&zoom=13");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+  transition: opacity 0.35s, transform 0.35s;
+  opacity: 1;
+}
+#mapOverlay #map h4 {
+  margin: auto;
+  width: 180px;
+  height: 150px;
+  padding-top: 2em;
+  opacity: 0;
+  transform: translate3d(-1.5em, -2em, 0);
+  transition: opacity 0.35s, transform 0.35s;
+}
+#mapOverlay #map h4::before {
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 50%;
+  box-shadow: 0 0 0 900px rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  content: "";
+  transform: scale3d(0.5, 0.5, 1);
+  transform-origin: 50% 50%;
+}
+#mapOverlay:hover #map {
+  opacity: 0.6;
+}
+#mapOverlay:hover #map h4 {
+  opacity: 1;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+#mapOverlay:hover #map h4::before {
+  opacity: 0;
+  transform: scale3d(1, 1, 1);
+}
+#roster {
+  min-height: 200px;
+}
+#players {
+  display: flex;
+  justify-content: center;
+  max-width: 1000px;
+  margin: auto;
+}
+#players .player {
+  display: flex;
+  align-items: center;
+  max-width: 50%;
+  padding-right: 10px;
+  padding-left: 10px;
+  height: 13px;
+  border-right: 1px solid black;
+}
+#players .player i {
+  font-size: 10px;
+}
