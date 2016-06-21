@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Sriracha" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <!--<link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.css">-->
+    
   </head>
   <body>
     <header>
@@ -23,8 +24,12 @@
         </div>
       
     </header>
+    
+    <!--  ////////   NEXT GAME /////////////-->
+    
     <section id="next">
       <h4>Next Game</h4>
+      
       <div class="games">
         <div class="game">
           <p class="opponent">SCS Enviro Services</p>
@@ -32,7 +37,20 @@
           <p class="time">5:30pm</p>
           <p class="location">Land Park Field #3</p>
         </div>
+        
+        <div id="addGameButton">
+          <img  src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-player/40/button_new_2-128.png"/>
+        </div>
         <!-- if a new game gets this place, move this current game property to upcoming -->
+        
+        <div id="addGameModule" class="hidden">
+          <h4>Add a Game</h4>
+          <input class="opponent" type="text" placeholder="opponent">
+          <input id="datepicker" class="date"  placeholder="date">
+          <input class="time" placeholder="time">
+          <input class="location" placeholder="location">
+        </div>
+        
       </div>
     </section>
     
@@ -113,6 +131,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/main.js"></script>
-    <script src="/js/angular.min.js"></script>
+    <script src="/js/pikaday.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2fIsU3BE1FtGxOVoApV-qE33U0d01dzo&libraries=places"></script>
   </body>
 </html>

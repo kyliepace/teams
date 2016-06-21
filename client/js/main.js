@@ -7,6 +7,25 @@ $(document).ready(function(){
       //on successful login, removeClass(hidden) from header nav
     });
     
+    ///// click plus sign to show addGameModule
+    $("#addGameButton").on("click", function(){
+      console.log("clicked");
+      $("#addGameModule").toggleClass("hidden");
+      //if input.val()!= "", create a new game object populated with the values
+    });
+    /// Pikaday within addGameModule
+    var field = document.getElementById('datepicker');
+    var picker = new Pikaday({ 
+      field: $('#datepicker')[0], 
+      //trigger: $("#datepicker")[0],
+      //container: $(this)[0],
+      format: 'DD/MM/YYYY',
+      firstDay: 1
+    });
+  
+  
+
+    
     
     function ChatController($scope) {
         var socket = io.connect();
