@@ -2,6 +2,7 @@
 @color-2: #FEF5E8;
 @text-color:#0D042B;
 @font1: 'Sriracha', cursive;
+@font2: 'Montserrat', sans-serif;
 @gameBorder: 1px solid black;
 @page-align: center;
 @line-height: 12px;
@@ -20,24 +21,61 @@ h4{
     font-size: @h4-size;
 }
 
+.hidden{
+    display:none;
+}
 header{
-    display: flex;
     align-items: center;
-    
-    input{
-        margin-left: 10px;
-        border: @sectionBorder;
-        height: 25px;
-        width: 120px;
-        padding-left: 10px;
-    }
-    h1{
-        padding-left: 220px;
-    }
-    padding: 20px;
+    padding-left: 20px;
     background-color: @color-1;
     color: @color-2;
     width: 100%;
+    text-align: @page-align;
+    overflow: auto;
+    font-family: @font2;
+    div{
+        display:flex;
+        align-items: center;
+        margin:0;
+        height: 40px;
+         h5{
+            transform: translateZ(0);
+            transition-duration: 0.4s;
+            transition-property: box-shadow;
+            padding: 5px;
+            margin:0;
+            font-family: @font1;
+            &:hover{
+                box-shadow: inset 0 0 0 4px @color-2, 0 0 1px rgba(0,0,0,0);
+            }
+        }
+        input{
+            margin-left: 10px;
+            border: @sectionBorder;
+            height: 25px;
+            width: 120px;
+            padding-left: 10px;
+            font-family: @font2;
+        }
+        #submitLogin{
+            width: 65px;
+            height: 25px;
+            padding: 0;
+            background-color: @color-2;
+            transform: translateZ(0);
+            transition-duration: 0.3s;
+            &:active{
+                transform: scale(1.2);
+                animation-duration: 0.3s;
+                animation-timing-function: linear;
+                animation-iteration-count: 1;
+                border: none;
+            }
+        }
+    }
+    h1{
+        margin: 0;
+    }
 }
 
 section{

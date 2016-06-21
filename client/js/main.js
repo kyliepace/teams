@@ -1,6 +1,11 @@
 $(document).ready(function(){
-    
-    
+  
+    ////// click log in to show inputs
+    $("header div h5").on("click", function(){
+      console.log("clicked");
+      $("header div input").toggleClass("hidden");
+      //on successful login, removeClass(hidden) from header nav
+    });
     
     
     function ChatController($scope) {
@@ -34,6 +39,6 @@ $(document).ready(function(){
         $scope.setName = function setName() {
           socket.emit('identify', $scope.name);
         };
-     }
-})
+     };
+});
 

@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Sriracha" rel="stylesheet">
-    <link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <!--<link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.css">-->
   </head>
   <body>
     <header>
-      
-        <h5 id="login">Log In</h5>
-        <input type="text" name="username" required=true placeholder="email">
-        <input type="text" name="password" required=true placeholder="password">
+        <div>
+          <h5>Log In</h5>
+          <input class = "hidden" type="text" name="username" required=true placeholder="email">
+          <input class="hidden" type="text" name="password" required=true placeholder="password">
+          <input id="submitLogin" class = "hidden"  type = "button" value="play ball!">
+        </div>
         
         <h1>GO TEAMNAME!</h1>
+        <div class="hidden nav">
+          
+        </div>
       
     </header>
     <section id="next">
@@ -46,18 +52,18 @@
       <h4>Team Roster</h4>
       
         <div id="players">
-          <div class="player 1">
+          <div class="player">
             <h5>Player 1</h5>
             <i class="fa fa-square-o" aria-hidden="true"></i>
           </div>
           
-          <div class="player 2">
-            <h5>Player 1</h5>
+          <div class="player">
+            <h5>Player 2</h5>
             <p><i class="fa fa-square-o" aria-hidden="true"></i></p>
           </div>
           
-          <div class="player 3">
-            <h5>Player 1</h5>
+          <div class="player">
+            <h5>Player 3</h5>
             <p><i class="fa fa-square-o" aria-hidden="true"></i></p>
           </div>
         
@@ -106,7 +112,7 @@
     
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/main.js"></script>
     <script src="/js/angular.min.js"></script>
   </body>
 </html>
