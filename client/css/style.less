@@ -4,7 +4,7 @@
 @font1: 'Sriracha', cursive;
 @gameBorder: 1px solid black;
 @page-align: center;
-@line-height: 8px;
+@line-height: 12px;
 @gameHeight: 150px;
 @gameWidth: 200px;
 @sectionBorder: 1px solid black;
@@ -21,13 +21,18 @@ h4{
 }
 
 header{
-    .content{
-        display: flex;
-        align-items: flex-end;
-        h1{
-            margin: auto;
-            padding-right: 50px;
-        }
+    display: flex;
+    align-items: center;
+    
+    input{
+        margin-left: 10px;
+        border: @sectionBorder;
+        height: 25px;
+        width: 120px;
+        padding-left: 10px;
+    }
+    h1{
+        padding-left: 220px;
     }
     padding: 20px;
     background-color: @color-1;

@@ -8,22 +8,26 @@ h4 {
   font-size: 30px;
 }
 header {
+  display: flex;
+  align-items: center;
   padding: 20px;
   background-color: #133582;
   color: #FEF5E8;
   width: 100%;
 }
-header .content {
-  display: flex;
-  align-items: flex-end;
+header input {
+  margin-left: 10px;
+  border: 1px solid black;
+  height: 25px;
+  width: 120px;
+  padding-left: 10px;
 }
-header .content h1 {
-  margin: auto;
-  padding-right: 50px;
+header h1 {
+  padding-left: 220px;
 }
 section {
   text-align: center;
-  line-height: 8px;
+  line-height: 12px;
   width: 100%;
   margin: auto;
   background-color: #FEF5E8;
