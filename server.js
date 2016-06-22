@@ -13,6 +13,7 @@ var mongoose = require("mongoose");
 var bcrypt = require('bcrypt');
 var passport = require("passport");
 var Users = require('./user_model.js');
+var Games = require("./game_model.js");
 
 
 app.use(express.static(path.resolve(__dirname, 'client')));
@@ -64,6 +65,32 @@ app.get('/users', function(req, res) {
     });
 });
 
+////////// GET LIST OF GAMES //////////
+app.get("/games", function(req, res){
+  Games.find(function(err, games){
+    if(err){
+      errback(err);
+      return;
+    }
+    res.status(200).json(games);
+  },
+  function(err){
+    res.status(400).json(err);
+  });
+});
+
+///////// LOG IN /////
+app.use(passport.initialize());
+/* Handle Login  */
+app.get('/login', passport.authenticate('strategy', {
+    session: true,
+    //successRedirect: '/home',
+    //failureRedirect: '/',
+    //failureFlash : true 
+  }), function(req, res){
+    res.json({status: "success" });
+  });
+
 /////////////  CREATE A USER WITH A USERNAME AND ROLE /////////////////
 app.post('/users', function(req, res) {
     //define function
@@ -84,9 +111,26 @@ app.post('/users', function(req, res) {
     });
 });
 
+///////////// CREATE A GAME /////////////////
+app.post("/games", function(req, res){
+  Games.save = function(opponent, date, time, location, ourScore, theirScore, callback, errback){
+    Games.create({opponent: opponent, date: date, location: location, ourScore: ourScore, theirScore: theirScore}, function(err, game){
+      if(err){
+        errback(err);
+        return;
+      }
+      callback(game);
+    });
+  };
+  Games.save(req.body.opponent, req.body.date, req.body.time, req.body.location, req.body.ourScore, req.body.theirScore, function(game){
+    res.status(201).json(game);
+  }, function(err){
+    res.status(400).json(err);
+  });
+});
+
 ///////// UPDATE A USER BY ADDING A PASSWORD //////////
 app.put("/users/:id", function(req, res){
-  
   //1. define updateUser function
     Users.updateUser = function(id, password, callback, errback){
         Users.findById(id, function(err, user){
@@ -121,7 +165,9 @@ app.put("/users/:id", function(req, res){
       });
     });
 });
-    
+
+
+////////////// UPDATE A GAME /////////////
     
   
 
