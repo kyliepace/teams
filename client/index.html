@@ -12,16 +12,22 @@
   <body>
     <header>
         <div>
-          <h5>Log In</h5>
-          <input class = "hidden" type="text" name="username" required=true placeholder="email">
-          <input class="hidden" type="text" name="password" required=true placeholder="password">
-          <input id="submitLogin" class = "hidden"  type = "button" value="play ball!">
+          <h5 class="login">Log In</h5>
+          <input class = "hidden login" type="text" name="username" required=true placeholder="email">
+          <input class="hidden login" type="text" name="password" required=true placeholder="password">
+          <input id="submitLogin" class = "hidden login"  type="button" value="play ball!">
+          <p class="hidden"></p>
+          
+          <h5 class="hidden addUser">Add User</h5>
+          <input class = "hidden addUser" type="text" name="username" required=true placeholder="their email">
+          <select class="hidden addUser" name="role">
+            <option value="player">player</option>
+            <option value="manager">Manager</option>
+          </select>
+          <input id="submitLogin" class = "hidden addUser"  type = "button" value="invite user!">
         </div>
         
         <h1>GO TEAMNAME!</h1>
-        <div class="hidden nav">
-          
-        </div>
       
     </header>
     
@@ -106,6 +112,10 @@
           <p class="date">June 10, 2016</p>
           <p class="time">7:00pm</p>
           <p class="location">Roseville</p>
+          <div class="scores">
+            <p class="ourScore">10-</p>
+            <p class="theirScore">8</p>
+          </div>
         </div>
         
         <div class="game">
@@ -128,10 +138,10 @@
     </section>
     
     
-    <script src="/socket.io/socket.io.js"></script>
+    <!--<script src="/socket.io/socket.io.js"></script>-->
     <script src="/js/jquery.min.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/pikaday.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2fIsU3BE1FtGxOVoApV-qE33U0d01dzo&libraries=places"></script>
+    
   </body>
 </html>

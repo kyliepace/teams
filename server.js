@@ -1,28 +1,66 @@
-//
-// # SimpleServer
-//
-// A simple chat server using Socket.IO, Express, and Async.
-//
 var http = require('http');
 var path = require('path');
-
-var async = require('async');
-var socketio = require('socket.io');
+var bodyParser = require('body-parser');
+//var async = require('async');
+//var socketio = require('socket.io');
 var express = require('express');
+var app = express(); 
+var router = express.Router();  //do I need this?
+//var server = http.createServer(router);
+//var io = socketio.listen(server);
+var BasicStrategy = require('passport-http').BasicStrategy;
+var mongoose = require("mongoose");
+var bcrypt = require('bcrypt');
+var passport = require("passport");
+var Users = require('./user_model.js');
 
-//
-// ## SimpleServer `SimpleServer(obj)`
-//
-// Creates a new instance of SimpleServer with the following options:
-//  * `port` - The HTTP port to listen on. If `process.env.PORT` is set, _it overrides this value_.
-//
-var router = express();
-var server = http.createServer(router);
-var io = socketio.listen(server);
 
-router.use(express.static(path.resolve(__dirname, 'client')));
+app.use(express.static(path.resolve(__dirname, 'client')));
+//app.use(express.static('client'));
+app.use(bodyParser.json());
+app.use(passport.initialize());
+
+/////////// GET LIST OF USERS //////////////
+app.get('/users', function(req, res) {
+    Users.find(function(err, users) {
+        if (err) {
+            errback(err);
+            return;
+        }
+        res.status(200).json(users);
+    },
+    function(err) {
+        res.status(400).json(err);
+    });
+});
+
+/////////////  CREATE A USER WITH A USERNAME AND ROLE /////////////////
+app.post('/items', function(req, res) {
+    //define function
+    Users.save= function(username, role, callback, errback){
+      Users.create({username: username, role: role}, function(err, user){
+        if(err){
+          errback(err);
+          return;
+        }
+        callback(user);
+      });
+    };
+    //invoke function passing in args from req
+    Users.save(req.body.username, req.body.role, function(user){
+      res.status(201).json(user); //callback
+    }, function(err){
+      res.status(400).json(user); //errback
+    });
+});
+
+
+
+
+/*
 var messages = [];
 var sockets = [];
+
 
 io.on('connection', function (socket) {
     messages.forEach(function (data) {
@@ -77,8 +115,11 @@ function broadcast(event, data) {
     socket.emit(event, data);
   });
 }
+*/
+// server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
+//   var addr = server.address();
+//   console.log("Server listening at", addr.address + ":" + addr.port);
+// });
 
-server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
-  var addr = server.address();
-  console.log("Chat server listening at", addr.address + ":" + addr.port);
+app.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
 });

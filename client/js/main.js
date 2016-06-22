@@ -1,16 +1,21 @@
 $(document).ready(function(){
-  
+    //dom cache
+    var $logInToggle = $("header div h5.login");
+    var $logInInputs = $("header div input.login");
+    var $addGameButton = $("#addGameButton");
+    var $addGameModule = $("#addGameModule");
     ////// click log in to show inputs
-    $("header div h5").on("click", function(){
+    $logInToggle.on("click", function(){
       console.log("clicked");
-      $("header div input").toggleClass("hidden");
-      //on successful login, removeClass(hidden) from header nav
+      $logInInputs.toggleClass("hidden");
+      //on successful login, unhide header div h5.addUser
+      //on successful login, unhide $addGameButton;
     });
     
     ///// click plus sign to show addGameModule
-    $("#addGameButton").on("click", function(){
+    $addGameButton.on("click", function(){
       console.log("clicked");
-      $("#addGameModule").toggleClass("hidden");
+      $addGameModule.toggleClass("hidden");
       //if input.val()!= "", create a new game object populated with the values
     });
     /// Pikaday within addGameModule
@@ -26,7 +31,7 @@ $(document).ready(function(){
   
 
     
-    
+    /*
     function ChatController($scope) {
         var socket = io.connect();
 
@@ -59,5 +64,6 @@ $(document).ready(function(){
           socket.emit('identify', $scope.name);
         };
      };
+     */
 });
 
