@@ -8,8 +8,8 @@ mongoose.connection.on('error', function(err) {
 
 
 var usersSchema = mongoose.Schema({
-       username: {type: String, unique: true},
-       password: {type: String, unique: false},
+       username: {type: String, unique: true, required: true},
+       password: {type: String, unique: false, required: false},
        role: {type: String, unique: false}
     });
     

@@ -20,6 +20,36 @@ app.use(express.static(path.resolve(__dirname, 'client')));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
+/////////// CHECK PASSWORD UPON SIGN-IN ///////////
+var strategy = new BasicStrategy(function(username, password, callback) {
+    Users.findOne({username: username}, function (err, user) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        if (!user) {
+            return callback(null, false, {
+                message: 'no user exists with that email address'
+            });
+        }
+        //user.validatePassword checks hashed password.
+        user.validatePassword(password, function(err, isValid) {
+            if (err) {
+                return callback(err);
+            }
+
+            if (!isValid) {
+                return callback(null, false, {
+                    message: 'Incorrect password.'
+                });
+            }
+            return callback(null, user);  //what is the callback?
+        });
+    });
+});
+
+passport.use(strategy);
+
 /////////// GET LIST OF USERS //////////////
 app.get('/users', function(req, res) {
     Users.find(function(err, users) {
@@ -35,7 +65,7 @@ app.get('/users', function(req, res) {
 });
 
 /////////////  CREATE A USER WITH A USERNAME AND ROLE /////////////////
-app.post('/items', function(req, res) {
+app.post('/users', function(req, res) {
     //define function
     Users.save= function(username, role, callback, errback){
       Users.create({username: username, role: role}, function(err, user){
@@ -50,11 +80,50 @@ app.post('/items', function(req, res) {
     Users.save(req.body.username, req.body.role, function(user){
       res.status(201).json(user); //callback
     }, function(err){
-      res.status(400).json(user); //errback
+      res.status(400).json(err); //errback
     });
 });
 
-
+///////// UPDATE A USER BY ADDING A PASSWORD //////////
+app.put("/users/:id", function(req, res){
+  
+  //1. define updateUser function
+    Users.updateUser = function(id, password, callback, errback){
+        Users.findById(id, function(err, user){
+          user.update({password: password}, function(err, user){ 
+            if (err){
+              errback(err);
+              return;
+            }
+            callback(user);
+          });
+        });
+    };
+    //2. hash password and call updateUser
+    var pass = req.body.password;
+    //pass.trim();
+    bcrypt.genSalt(10, function(err, salt){
+      if(err){
+        return res.status(500).json({message: "Internal server error"});
+      }
+      bcrypt.hash(pass, salt, function(err, hash) {
+        if (err) {
+          return res.status(500).json({
+            message: 'Internal server error'
+          });
+        }
+        Users.updateUser(req.body._id, hash, function(user){
+            res.status(200).json(user);
+          }, function(err){
+            res.status(400).json(err);
+          }
+        );
+      });
+    });
+});
+    
+    
+  
 
 
 /*
