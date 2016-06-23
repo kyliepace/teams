@@ -11,18 +11,17 @@ var Model = function() {
     //this.game.on("click", "p", this.editGame(this.game).bind(this));
     //this.game.on("click", ".updateGame", this.saveChanges.bind(this));
 };
-Model.prototype.toggleLogin = function(){
-    this.view.username.toggleClass("hidden");
-    this.view.password.toggleClass("hidden");
-    this.view.submitLogin.toggleClass("hidden");
-};
+
 
 Model.prototype.onAddGameClick = function() {
     this.view.addGameModule.toggleClass("hidden");
 };
 Model.prototype.checkIfPassword = function() {
-    if(this.view.usernameVal !== "" && this.view.passwordVal !== ""){
-        var that = this;
+    this.username = document.getElementById("username").value;
+    this.password = document.getElementById("password").value;
+    console.log(username + password);
+    var that = this;
+    if(username !== "" && password !== ""){
         var ajax = $.ajax('/users', {  //make a GET request to server and find the user with the given username
             type: 'GET',
             dataType: 'json'
@@ -30,16 +29,18 @@ Model.prototype.checkIfPassword = function() {
         ajax.done(that.onGetUsersDone);  //gets list of all users
     }
 };
+
 Model.prototype.onGetUsersDone = function(users) { 
     var that = this;
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
     var foundUser = {};
     users.forEach(function(user){
-        if (user.username === that.usernameVal){
+        if (user.username === username){
             foundUser = user;
         }
     })
-    console.log(foundUser);
-    this.authUser.role = foundUser.role;
+    //that.authUser.role = foundUser.role; can't set authUser.role from here
     if (!foundUser.password){ //if user doesn't have a password yet, update the record with whatever they typed in input
         var user = {"_id": foundUser._id, "password": this.view.passwordVal} ;
         var ajax = $.ajax('/users'+foundUser._id, {
@@ -51,17 +52,17 @@ Model.prototype.onGetUsersDone = function(users) {
         ajax.done(that.onNewUserLogIn); //notify the user that their password has been saved and they are signed in
     }
     else{
-        that.usePassport;  //if foundUser does already have a password, check that it matches
+        var user = ({username: username, password: password});
+        var ajax = $.ajax('/login', {  //make a GET request to server to use passport strategy
+            type: 'POST',
+            data: JSON.stringify(user),
+            dataType: 'json',
+            contentType: 'application/json'
+        });
+        ajax.done(that.checkPassportRes);
     }
 };
-Model.prototype.usePassport = function() {
-    var that = this;
-    var ajax = $.ajax('/login', {  //make a GET request to server to use passport strategy
-            type: 'GET',
-            dataType: 'json'
-        });
-    ajax.done(that.checkPassportRes);
-};
+
 Model.prototype.onNewUserSignIn = function() {
     //notify that password has been saved
     this.view.message.text("Welcome! Your password has been saved");
