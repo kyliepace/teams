@@ -1,60 +1,27 @@
 
 var Model = function() {
+    this.view;
+    this.authUser;
+    this.game;
     this.games = [];
-    this.upcomingGamesDiv = $('#upcoming .games');
     
-    this.addGameButton = $('#addGameButton');
-    this.addGameButton.on("click", this.onAddGameClick.bind(this));
-    this.addGameModule = $("#addGameModule");
-    this.addGameOpponent = $("#addGameModule .opponent").val();
-    this.addGameDate = $("#addGameModule .date").val();
-    this.addGameTime = $("#addGameModule .time").val();
-    
-    this.addGameLocation = $("#addGameModule .location").val();
-    this.addGameOurScore = $("#addGameModule .ourScore").val();
-    this.addGameTheirScore =$("#addGameModule .theirScore").val();
-    
-    this.login = $("header div h5.login");
-    this.username = $("#username");
-    this.password = $("#password");
-    this.role;
-    this.submitLogin = $('#submitLogin');
-    this.login.on("click", this.toggleLogin.bind(this));
-    this.passwordInput = $("header div .login");
-    
-    this.message = $("#message");
-    
-    this.addUserButton = $("header h5.addUser");
-    this.addUsername = $("header username.addUser").val();
-    this.addUserRole = $("header select").val();
-    this.submitNewUser = $("#submitNewUser");
-    
-    this.submitLogin.on('click', this.checkIfPassword.bind(this));
-    this.passwordInput.keyup(function(event){
-        var that = this;
-        if(event.keyCode === 13){
-            that.submitLogin.trigger("click");
-        }
-    });
-  
-    this.addUserButton.on("click", this.showAddUser.bind(this));
     //this.submitNewUser.on("click", this.addUser(this.addUsername, this.addUserRole));
-    this.game = $(".game");
+    
     //this.updateGame = //make button
     //this.game.on("click", "p", this.editGame(this.game).bind(this));
     //this.game.on("click", ".updateGame", this.saveChanges.bind(this));
 };
 Model.prototype.toggleLogin = function(){
-    this.username.toggleClass("hidden");
-    this.password.toggleClass("hidden");
-    this.submitLogin.toggleClass("hidden");
+    this.view.username.toggleClass("hidden");
+    this.view.password.toggleClass("hidden");
+    this.view.submitLogin.toggleClass("hidden");
 };
 
 Model.prototype.onAddGameClick = function() {
-    this.addGameModule.toggleClass("hidden");
+    this.view.addGameModule.toggleClass("hidden");
 };
 Model.prototype.checkIfPassword = function() {
-    if(this.username !== "" && this.password !== ""){
+    if(this.view.usernameVal !== "" && this.view.passwordVal !== ""){
         var that = this;
         var ajax = $.ajax('/users', {  //make a GET request to server and find the user with the given username
             type: 'GET',
@@ -64,8 +31,6 @@ Model.prototype.checkIfPassword = function() {
     }
 };
 Model.prototype.onGetUsersDone = function(users) { 
-    this.usernameVal = document.getElementById("username").value;
-    this.passwordVal = document.getElementById("password").value;
     var that = this;
     var foundUser = {};
     users.forEach(function(user){
@@ -74,58 +39,50 @@ Model.prototype.onGetUsersDone = function(users) {
         }
     })
     console.log(foundUser);
-    this.role = foundUser.role;
+    this.authUser.role = foundUser.role;
     if (!foundUser.password){ //if user doesn't have a password yet, update the record with whatever they typed in input
-        var user = {"password": this.password, "_id": foundUser._id};
+        var user = {"_id": foundUser._id, "password": this.view.passwordVal} ;
         var ajax = $.ajax('/users'+foundUser._id, {
             type: 'PUT',
             data: JSON.stringify(user),
             dataType: 'json',
             //contentType: 'application/json'
         });
-        ajax.done(this.onNewUserLogIn); //notify the user that their password has been saved and they are signed in
+        ajax.done(that.onNewUserLogIn); //notify the user that their password has been saved and they are signed in
     }
     else{
-        this.usePassport;  //if foundUser does already have a password, check that it matches
+        that.usePassport;  //if foundUser does already have a password, check that it matches
     }
 };
 Model.prototype.usePassport = function() {
+    var that = this;
     var ajax = $.ajax('/login', {  //make a GET request to server to use passport strategy
             type: 'GET',
             dataType: 'json'
         });
-    ajax.done(this.checkPassportRes.bind(this));
+    ajax.done(that.checkPassportRes);
 };
-Model.prototype.onNewUserSignIn = function(event) {
+Model.prototype.onNewUserSignIn = function() {
     //notify that password has been saved
-    this.message.text("Welcome! Your password has been saved");
-    this.addGameButton.removeClass("hidden"); //show "add game" button
-    if(this.role === "manager"){
-            this.addUserButton.removeClass("hidden"); //show "add user" button
+    this.view.message.text("Welcome! Your password has been saved");
+    this.view.addGameButton.removeClass("hidden"); //show "add game" button
+    if(this.authUser.role === "manager"){
+            this.view.addUserButton.removeClass("hidden"); //show "add user" button
         }
 };
 Model.prototype.checkPassportRes = function(response) {
     if(response.status === "success"){
-        this.message.text("Welcome back!");
-        this.addGameButton.removeClass("hidden"); //show "add game" button
-        if(this.role === "manager"){
-             this.addUserButton.removeClass("hidden"); //show "add user" button
+        this.view.message.text("Welcome back!");
+        this.view.addGameButton.removeClass("hidden"); //show "add game" button
+        if(this.authUser.role === "manager"){
+             this.view.addUserButton.removeClass("hidden"); //show "add user" button
         }
     }
     else{
-        this.message.text("Incorrect password");
+        this.view.message.text("Incorrect password");
     }
 };
-Model.prototype.addGame = function(opponent, date, time, location, ourScore, theirScore) {
-    var game = {'opponent': opponent, "date": date, "time": time, "location":location, "ourScore":ourScore, "theirScore":theirScore};
-    var ajax = $.ajax('/games', {
-        type: 'POST',
-        data: JSON.stringify(game),
-        dataType: 'json',
-        //contentType: 'application/json'
-    });
-    ajax.done(this.arrangeGames);
-};
+
 Model.prototype.showAddUser = function() {
     this.addUsername.toggleClass("hidden");
     this.addUserRole.toggleClass("hidden");
@@ -146,8 +103,44 @@ Model.prototype.userAdded = function() {
     this.addUserRole.val("player");
     this.message.text("user added").delay(4000).text("");
 };
+Model.prototype.addGame = function() {
+    var game = {'opponent': this.game.opponent, "date": this.game.date, "time": this.game.time, "location":this.game.location, "ourScore":this.game.ourScore, "theirScore":this.game.theirScore};
+    var that = this;
+    var ajax = $.ajax('/games', {
+        type: 'POST',
+        data: JSON.stringify(game),
+        dataType: 'json',
+        //contentType: 'application/json'
+    });
+    ajax.done(that.arrangeGames);
+};
 Model.prototype.editGame= function(game) {
     //toggleClass("hidden") to all the ps and the inputs in the selected game
 };
 
-//module.exports = Model();
+var AuthUser = function(){
+    this.role;    
+}
+
+var Game = function(){
+    this.model;
+    this.view;
+    this.opponent;
+    this.time;
+    this.date;
+    this.ourScore;
+    this.theirScore;
+    this.location;
+};
+
+Game.prototype.addGame = function(){
+    this.opponent = this.view.addGameOpponent;
+    this.date = this.view.addGameDate;
+    this.time = this.view.addGameTime;
+    this.location = this.view.addGameLocation;
+    this.ourScore = this.view.addGameOurScore;
+    this.theirScore = this.view.addGameTheirScore;
+    this.model.addGame();
+}
+
+

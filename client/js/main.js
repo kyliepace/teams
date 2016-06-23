@@ -1,10 +1,16 @@
 //var Model = require("./model.js");
 
 $(document).ready(function(){
-  
-  // activate datepickers for all elements with a class of `datepicker`
-  $('#addGameModule #datepicker').pikaday({ firstDay: 1 });
-
+  $('#addGameModule #datepicker').pikaday({ firstDay: 1 }); // activate datepicker
+  var view = new View();
   var model = new Model();
+  var authUser = new AuthUser();
+  var game = new Game();
+  view.model = model;
+  view.game = game;
+  model.view = view;
+  model.authUser = authUser;
+  model.game = game;
+  game.model = model;
 });
 
