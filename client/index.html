@@ -13,9 +13,11 @@
     <header>
         <div>
           <h5 class="login">Log In</h5>
-          <input class = "hidden login" type="text" name="username" required=true placeholder="email">
-          <input class="hidden login" type="text" name="password" required=true placeholder="password">
-          <input id="submitLogin" class = "hidden login"  type="button" value="play ball!">
+          <form>
+            <input class = "hidden login" id="username" type="text" name="username" required=true placeholder="email">
+            <input class="hidden login" id="password" type="text" name="password" required=true placeholder="password">
+            <input id="submitLogin" class = "hidden login"  type="button" value="play ball!">
+          </form>
           <p id="message"></p>
           
           <h5 class="hidden addUser">Add User</h5>
@@ -39,22 +41,29 @@
       <div class="games">
         <div class="game">
           <p class="opponent">SCS Enviro Services</p>
+          <input class="hidden opponent" type="text" placeholder="opponent">
           <p class="date">June 22, 2016</p>
+          <input id="datepicker" class="hidden date"  placeholder="date">
           <p class="time">5:30pm</p>
+          <input class="hidden time" placeholder="time">
           <p class="location">Land Park Field #3</p>
+          <input class="hidden location" placeholder="location">
         </div>
         
-        <div id="addGameButton" class="hidden">
+        <div id="addGameButton" class="">
           <img  src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-player/40/button_new_2-128.png"/>
         </div>
         <!-- if a new game gets this place, move this current game property to upcoming -->
         
         <div id="addGameModule" class="hidden">
           <h4>Add a Game</h4>
+           <div>
           <input class="opponent" type="text" placeholder="opponent">
-          <input id="datepicker" class="date"  placeholder="date">
+          <input id="datepicker" class="date" type="text" placeholder="date">
           <input class="time" placeholder="time">
           <input class="location" placeholder="location">
+          <input id="submitAddGame" type="button" value="+">
+          </div>
         </div>
         
       </div>
@@ -142,6 +151,7 @@
     <script src="/js/jquery.min.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/pikaday.js"></script>
-    
+    <script src="/js/pikaday-plugin.js"></script>
+    <script src="/js/model.js"></script>
   </body>
 </html>

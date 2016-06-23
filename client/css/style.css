@@ -116,7 +116,7 @@ section {
 #addGameModule {
   position: absolute;
   width: 250px;
-  top: 120px;
+  top: 150px;
   right: 100px;
   height: 200px;
   background-color: #133582;
@@ -125,10 +125,14 @@ section {
   box-shadow: 0 0 1px 8px #133582;
 }
 #addGameModule h4 {
-  margin-bottom: 5px;
+  margin: 20px 0px;
 }
-#addGameModule input {
-  margin-top: 5px;
+#addGameModule div {
+  width: 170px;
+  margin: auto;
+}
+#addGameModule div input {
+  margin-top: 10px;
   padding-left: 5px;
   font-family: 'Montserrat', sans-serif;
 }

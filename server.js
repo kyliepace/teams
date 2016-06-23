@@ -168,8 +168,25 @@ app.put("/users/:id", function(req, res){
 
 
 ////////////// UPDATE A GAME /////////////
-    
-  
+app.put("/games/:id", function(req, res){
+    var _id = req.body._id;
+    Games.updateGame = function(id, opponent, date, time, location, ourScore, theirScore, callback, errback){
+      Games.findById(id, function(err, game){
+        game.update({opponent: opponent, date: date, time: time, location: location, ourScore: ourScore, theirScore:theirScore}, function(err, game){
+          if(err){
+            errback(err);
+            return;
+          }
+          callback(game);
+        });
+      });
+    };
+    Games.updateItem(req.body._id, req.body.opponent, req.body.date, req.body.time, req.body.location, req.body.ourScore, req.body.theirScore, function(item){ 
+        res.status(200).json(item);
+    }, function(err){
+        res.status(400).json(err);
+    });
+});
 
 
 /*
