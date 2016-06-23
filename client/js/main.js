@@ -20,7 +20,5 @@ $(document).ready(function(){
         }
   });
   view.game.on("click", view.submitAddGame, game.addGame.bind(game));
-  view.addUserButton.on("click", model.showAddUser.bind(model));
-  
 });
 

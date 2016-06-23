@@ -21,12 +21,12 @@
           <p id="message"></p>
           
           <h5 class="hidden addUser">Add User</h5>
-          <input class = "hidden addUser" type="text" name="username" required=true placeholder="their email">
-          <select class="hidden addUser" name="role">
+          <input class = "hidden addUser addUserInput" type="text" name="username" required=true placeholder="their email">
+          <select class="hidden addUser addUserInput" name="role">
             <option value="player">player</option>
             <option value="manager">Manager</option>
           </select>
-          <input id="submitNewUser" class = "hidden addUser"  type = "button" value="invite user!">
+          <input id="submitNewUser" class = "hidden addUser addUserInput"  type = "button" value="invite user!">
         </div>
         
         <h1>GO TEAMNAME!</h1>
@@ -50,7 +50,7 @@
           <input class="hidden location" placeholder="location">
         </div>
         
-        <div id="addGameButton" class="">
+        <div id="addGameButton" class="hidden">
           <img  src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-player/40/button_new_2-128.png"/>
         </div>
         <!-- if a new game gets this place, move this current game property to upcoming -->

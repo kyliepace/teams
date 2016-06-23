@@ -22,9 +22,12 @@ var View = function(){
     this.submitLogin = $('#submitLogin');
     this.passwordInput = $("header div .login");
     this.message = $("#message");
+    this.addUsername = $("header username.addUser");
+    this.addUserRole = $("header select");
+    this.addUserInputs = $("header .addUserInput");
     this.addUserButton = $("header h5.addUser");
-    this.addUsername = $("header username.addUser").val();
-    this.addUserRole = $("header select").val();
+    this.addUserButton.on("click", this.toggleAddUser.bind(this)); 
+    
     this.submitNewUser = $("#submitNewUser");
     
     this.staticMap = {
@@ -47,6 +50,9 @@ var View = function(){
     //var that = this;
     //this.model.checkIfPassword(that.usernameVal, that.passwordVal);
 //};
+View.prototype.toggleAddUser = function(){
+    this.addUserInputs.toggleClass("hidden");
+};
 View.prototype.showAddGameModule = function(){
     this.addGameModule.toggleClass("hidden");
 };

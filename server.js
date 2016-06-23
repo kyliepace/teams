@@ -59,7 +59,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
- ///////// LOG IN /////
+ ///////// LOG IN & OUT /////
     /* Handle Login  */
     app.post('/login', passport.authenticate('login', {
         session: true,
@@ -69,6 +69,11 @@ passport.deserializeUser(function(user, done) {
       }), function(req, res){
         res.json({status: "success" });
     });
+    /* Handle Logout */
+  app.get('/signout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+  });
     
 /////// GET LIST OF USERS////////////
     app.get('/users', function(req, res) {
@@ -153,11 +158,11 @@ passport.deserializeUser(function(user, done) {
         //2. hash password and call updateUser
         var pass = req.body.password;
         //pass.trim();
-        bcrypt.genSalt(10, function(err, salt){
+        bCrypt.genSalt(10, function(err, salt){
           if(err){
             return res.status(500).json({message: "Internal server error"});
           }
-          bcrypt.hash(pass, salt, function(err, hash) {
+          bCrypt.hash(pass, salt, function(err, hash) {
             if (err) {
               return res.status(500).json({
                 message: 'Internal server error'

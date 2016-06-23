@@ -19,9 +19,9 @@ Model.prototype.onAddGameClick = function() {
 Model.prototype.checkIfPassword = function() {
     this.username = document.getElementById("username").value;
     this.password = document.getElementById("password").value;
-    console.log(username + password);
+    console.log(this.username + this.password);
     var that = this;
-    if(username !== "" && password !== ""){
+    if(this.username !== "" && this.password !== ""){
         var ajax = $.ajax('/users', {  //make a GET request to server and find the user with the given username
             type: 'GET',
             dataType: 'json'
@@ -35,35 +35,51 @@ Model.prototype.onGetUsersDone = function(users) {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
     var foundUser = {};
+    console.log(username);
+    console.log(users);
     users.forEach(function(user){
-        if (user.username === username){
+        if (user.username == username){
             foundUser = user;
+            console.log(foundUser); //what's saved on the server
         }
-    })
+    });
     //that.authUser.role = foundUser.role; can't set authUser.role from here
     if (!foundUser.password){ //if user doesn't have a password yet, update the record with whatever they typed in input
-        var user = {"_id": foundUser._id, "password": this.view.passwordVal} ;
-        var ajax = $.ajax('/users'+foundUser._id, {
+        var user = {"_id": foundUser._id, "password": password} ;
+        var ajax = $.ajax('/users/'+foundUser._id, {
             type: 'PUT',
-            data: JSON.stringify(user),
-            dataType: 'json',
-            //contentType: 'application/json'
-        });
-        ajax.done(that.onNewUserLogIn); //notify the user that their password has been saved and they are signed in
-    }
-    else{
-        var user = ({username: username, password: password});
-        var ajax = $.ajax('/login', {  //make a GET request to server to use passport strategy
-            type: 'POST',
             data: JSON.stringify(user),
             dataType: 'json',
             contentType: 'application/json'
         });
-        ajax.done(that.checkPassportRes);
+        ajax.done(that.onNewUserLogIn); //notify the user that their password has been saved and they are signed in
+    }
+    else{
+        var userLoggingIn = ({'username': username, 'password': password});
+        console.log(userLoggingIn);
+        var ajax2 = $.ajax('/login', {  //make a GET request to server to use passport strategy
+            type: 'POST',
+            data: JSON.stringify(userLoggingIn),
+            dataType: 'json',
+            contentType: 'application/json'
+        });
+        ajax2.done(function(response){
+            console.log(response);
+            if(response.status === "success"){
+                $("header form .login").addClass("hidden");
+                $("header div h5.addUser").removeClass("hidden");
+                $("header div h5.login").text("Log out");
+                $("#addGameButton").removeClass("hidden");
+            }
+            else{
+                $("#message").text("wrong password");
+            }
+        });
     }
 };
 
 Model.prototype.onNewUserSignIn = function() {
+    console.log("welcome new user");
     //notify that password has been saved
     this.view.message.text("Welcome! Your password has been saved");
     this.view.addGameButton.removeClass("hidden"); //show "add game" button
@@ -72,7 +88,8 @@ Model.prototype.onNewUserSignIn = function() {
         }
 };
 Model.prototype.checkPassportRes = function(response) {
-    if(response.status === "success"){
+    if(response.body.status === "success"){
+        console.log("logged in!");
         this.view.message.text("Welcome back!");
         this.view.addGameButton.removeClass("hidden"); //show "add game" button
         if(this.authUser.role === "manager"){
@@ -80,7 +97,7 @@ Model.prototype.checkPassportRes = function(response) {
         }
     }
     else{
-        this.view.message.text("Incorrect password");
+        console.log("Incorrect password");
     }
 };
 
