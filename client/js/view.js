@@ -25,7 +25,7 @@ var View = function(){
         }
     });
     this.message = $("#message");
-    this.addUsername = $("header username.addUser");
+    this.addUsername = $("header input.addUserInput");
     this.addUserRole = $("header select");
     this.addUserButton = $("header h5.addUser");
     this.addUserButton.on("click", this.toggleAddUser.bind(this)); 
@@ -50,16 +50,18 @@ var View = function(){
 };
 
 View.prototype.updateInputValues = function(){
+    console.log("inputs updated");
     this.usernameVal = document.getElementById("username").value;
     this.passwordVal = document.getElementById("password").value;
+    var that = this;
     if(this.usernameVal !=="" && this.passwordVal !== ""){
-        this.model.checkUser().bind(this.model);
+        that.model.checkUser();
     }
 };
 View.prototype.updateNewInputValues = function(){
-    this.addUsernameVal =  $("header username.addUser").value;
-    this.addUserRoleVal = $("header select").value;
-    this.model.addUser().bind(this.model);
+    this.addUsernameVal =  document.getElementById("newUsername").value;
+    this.addUserRoleVal = document.getElementById("newRole").value;
+    this.model.addUser();
 };
 View.prototype.toggleAddUser = function(){
     this.addUsername.toggleClass("hidden");
@@ -85,7 +87,7 @@ View.prototype.toggleLogin = function(){
     this.submitLogin.toggleClass("hidden");
 };
 
-View.prototype.onNewUserSignIn = function() {
+View.prototype.onNewUserLogIn = function() {
     console.log("welcome new user");
     //notify that password has been saved
     this.message.text("Welcome! Your password has been saved");
@@ -98,6 +100,7 @@ View.prototype.makeMapUrl = function(){
 };
 
 View.prototype.showLoggedIn = function(){
+    console.log("logged in");
     this.login.text("Log out");
     this.login.on("click", this.model.signout.bind(this.model));
     this.username.addClass("hidden");

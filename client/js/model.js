@@ -18,19 +18,17 @@ Model.prototype.checkUser = function() {
 };
 Model.prototype.onGetUsersDone = function(users) { 
     var that = this;
-    console.log(this.username); 
     var foundUser = {};
-    console.log(username);
-    console.log(users);
+    console.log(this.view.usernameVal);
     users.forEach(function(user){
-        if (user.username == that.username){
+        if (user.username === that.view.usernameVal){
             foundUser = user;
             console.log(foundUser); //what's saved on the server
         }
     });
     that.authUser.role = foundUser.role; 
     if (!foundUser.password){ //if user doesn't have a password yet, update the record with whatever they typed in input
-        var user = {"_id": foundUser._id, "password": that.password} ;
+        var user = {"_id": foundUser._id, "password": that.view.passwordVal} ;
         var ajax = $.ajax('/users/'+foundUser._id, {
             type: 'PUT',
             data: JSON.stringify(user),
@@ -40,7 +38,7 @@ Model.prototype.onGetUsersDone = function(users) {
         ajax.done(that.view.onNewUserLogIn.bind(that.view)); //notify the user that their password has been saved and they are signed in
     }
     else{
-        var userLoggingIn = ({'username': that.username, 'password': that.password});
+        var userLoggingIn = ({'username': that.view.usernameVal, 'password': that.view.passwordVal});
         console.log(userLoggingIn);
         var ajax2 = $.ajax('/login', {  //make a GET request to server to use passport strategy
             type: 'POST',
@@ -49,16 +47,18 @@ Model.prototype.onGetUsersDone = function(users) {
             contentType: 'application/json'
         });
         ajax2.done(function(response){
+            console.log(response.status);
             if(response.status === "success"){
-                that.view.showLoggedIn().bind(that.view);
+                that.view.showLoggedIn(); 
             }
             else{
-                that.view.notLoggedIn().bind(that.view);
+                that.view.notLoggedIn();
             }
         });
     }
 };
 Model.prototype.addUser = function() {
+    console.log(this.view.addUsernameVal);
     var user = {'username': this.view.addUsernameVal, 'role': this.view.addUserRoleVal};
     var ajax = $.ajax('/users', {
         type: 'POST',
