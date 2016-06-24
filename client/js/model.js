@@ -1,61 +1,46 @@
-
 var Model = function() {
     this.view;
     this.authUser;
     this.game;
     this.games = [];
-    
-    //this.submitNewUser.on("click", this.addUser(this.addUsername, this.addUserRole));
-    
-    //this.updateGame = //make button
-    //this.game.on("click", "p", this.editGame(this.game).bind(this));
-    //this.game.on("click", ".updateGame", this.saveChanges.bind(this));
 };
 
-
-Model.prototype.onAddGameClick = function() {
-    this.view.addGameModule.toggleClass("hidden");
-};
-Model.prototype.checkIfPassword = function() {
-    this.username = document.getElementById("username").value;
-    this.password = document.getElementById("password").value;
-    console.log(this.username + this.password);
+Model.prototype.checkUser = function() {
+    console.log(this.view.usernameVal);
     var that = this;
     if(this.username !== "" && this.password !== ""){
         var ajax = $.ajax('/users', {  //make a GET request to server and find the user with the given username
             type: 'GET',
             dataType: 'json'
         });
-        ajax.done(that.onGetUsersDone);  //gets list of all users
+        ajax.done(that.onGetUsersDone.bind(that));  //gets list of all users
     }
 };
-
 Model.prototype.onGetUsersDone = function(users) { 
     var that = this;
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
+    console.log(this.username); 
     var foundUser = {};
     console.log(username);
     console.log(users);
     users.forEach(function(user){
-        if (user.username == username){
+        if (user.username == that.username){
             foundUser = user;
             console.log(foundUser); //what's saved on the server
         }
     });
-    //that.authUser.role = foundUser.role; can't set authUser.role from here
+    that.authUser.role = foundUser.role; 
     if (!foundUser.password){ //if user doesn't have a password yet, update the record with whatever they typed in input
-        var user = {"_id": foundUser._id, "password": password} ;
+        var user = {"_id": foundUser._id, "password": that.password} ;
         var ajax = $.ajax('/users/'+foundUser._id, {
             type: 'PUT',
             data: JSON.stringify(user),
             dataType: 'json',
             contentType: 'application/json'
         });
-        ajax.done(that.onNewUserLogIn); //notify the user that their password has been saved and they are signed in
+        ajax.done(that.view.onNewUserLogIn.bind(that.view)); //notify the user that their password has been saved and they are signed in
     }
     else{
-        var userLoggingIn = ({'username': username, 'password': password});
+        var userLoggingIn = ({'username': that.username, 'password': that.password});
         console.log(userLoggingIn);
         var ajax2 = $.ajax('/login', {  //make a GET request to server to use passport strategy
             type: 'POST',
@@ -64,65 +49,35 @@ Model.prototype.onGetUsersDone = function(users) {
             contentType: 'application/json'
         });
         ajax2.done(function(response){
-            console.log(response);
             if(response.status === "success"){
-                $("header form .login").addClass("hidden");
-                $("header div h5.addUser").removeClass("hidden");
-                $("header div h5.login").text("Log out");
-                $("#addGameButton").removeClass("hidden");
+                that.view.showLoggedIn().bind(that.view);
             }
             else{
-                $("#message").text("wrong password");
+                that.view.notLoggedIn().bind(that.view);
             }
         });
     }
 };
-
-Model.prototype.onNewUserSignIn = function() {
-    console.log("welcome new user");
-    //notify that password has been saved
-    this.view.message.text("Welcome! Your password has been saved");
-    this.view.addGameButton.removeClass("hidden"); //show "add game" button
-    if(this.authUser.role === "manager"){
-            this.view.addUserButton.removeClass("hidden"); //show "add user" button
-        }
-};
-Model.prototype.checkPassportRes = function(response) {
-    if(response.body.status === "success"){
-        console.log("logged in!");
-        this.view.message.text("Welcome back!");
-        this.view.addGameButton.removeClass("hidden"); //show "add game" button
-        if(this.authUser.role === "manager"){
-             this.view.addUserButton.removeClass("hidden"); //show "add user" button
-        }
-    }
-    else{
-        console.log("Incorrect password");
-    }
-};
-
-Model.prototype.showAddUser = function() {
-    this.addUsername.toggleClass("hidden");
-    this.addUserRole.toggleClass("hidden");
-    this.submitNewUser.toggleClass("hidden");
-};
-Model.prototype.addUser = function(username, role) {
-    var user = {'username': username, 'role': role};
+Model.prototype.addUser = function() {
+    var user = {'username': this.view.addUsernameVal, 'role': this.view.addUserRoleVal};
     var ajax = $.ajax('/users', {
         type: 'POST',
         data: JSON.stringify(user),
-        dataType: 'json',
+        dataType: 'json'
         //contentType: 'application/json'
     });
-    ajax.done(this.userAdded.bind(this));
+    ajax.done(this.view.userAdded.bind(this.view));
 };
-Model.prototype.userAdded = function() {
-    this.addUsername.val("");
-    this.addUserRole.val("player");
-    this.message.text("user added").delay(4000).text("");
+
+Model.prototype.signout = function(){
+    var ajax = $.ajax("/signout", {
+        type: "GET", 
+        dataType: "json"
+    });
+    ajax.done(this.view.onSignOut.bind(this.view));
 };
 Model.prototype.addGame = function() {
-    var game = {'opponent': this.game.opponent, "date": this.game.date, "time": this.game.time, "location":this.game.location, "ourScore":this.game.ourScore, "theirScore":this.game.theirScore};
+    var game = {'opponent': this.view.addGameOpponent, "date": this.view.addGameDate, "time": this.view.addGameTime, "location":this.view.addGameLocation, "ourScore":this.view.addGameOurScore, "theirScore":this.view.addGameTheirScore};
     var that = this;
     var ajax = $.ajax('/games', {
         type: 'POST',
@@ -130,16 +85,26 @@ Model.prototype.addGame = function() {
         dataType: 'json',
         //contentType: 'application/json'
     });
-    ajax.done(that.arrangeGames);
+    ajax.done(that.game.saveGame.bind(this.game));
+};
+Model.prototype.updateGames = function(){
+    this.games.push(this.game);
+    //find next upcoming game from this.games array
+    //append this.game to correct place on webpage
+    //if this.game goes into the next upcoming game spot, move the one that was there (if any) to upcoming games
+            //and then update the this.view.staticmap with a new background url and a href link
 };
 Model.prototype.editGame= function(game) {
     //toggleClass("hidden") to all the ps and the inputs in the selected game
 };
 
+//////////////// AUTH USER OBJECT ////////////////////
 var AuthUser = function(){
     this.role;    
 }
 
+
+////////////////////// GAME OBJECT //////////////////////////////
 var Game = function(){
     this.model;
     this.view;
@@ -151,14 +116,14 @@ var Game = function(){
     this.location;
 };
 
-Game.prototype.addGame = function(){
+Game.prototype.saveGame = function(){
     this.opponent = this.view.addGameOpponent;
     this.date = this.view.addGameDate;
     this.time = this.view.addGameTime;
     this.location = this.view.addGameLocation;
     this.ourScore = this.view.addGameOurScore;
     this.theirScore = this.view.addGameTheirScore;
-    this.model.addGame();
-}
+    this.model.updateGames().bind(this.model);
+};
 
 

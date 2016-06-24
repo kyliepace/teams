@@ -13,12 +13,8 @@ $(document).ready(function(){
   model.game = game;
   game.model = model;
   
-  view.submitLogin.on('click', model.checkIfPassword.bind(model));
-  view.passwordInput.keyup(function(event){
-        if(event.keyCode === 13){
-            view.submitLogin.trigger("click");
-        }
-  });
-  view.game.on("click", view.submitAddGame, game.addGame.bind(game));
+ 
+  
+  //view.game.on("click", view.submitAddGame, game.addGame.bind(game));
 });
 
