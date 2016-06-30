@@ -125,8 +125,8 @@ passport.deserializeUser(function(user, done) {
     
     ///////////// CREATE A GAME /////////////////
     app.post("/games", function(req, res){
-      Games.save = function(opponent, date, time, location, ourScore, theirScore, callback, errback){
-        Games.create({opponent: opponent, date: date, location: location, ourScore: ourScore, theirScore: theirScore}, function(err, game){
+      Games.save = function(opponent, date, time, location, callback, errback){
+        Games.create({opponent: opponent, date: date, location: location}, function(err, game){
           if(err){
             errback(err);
             return;
@@ -134,7 +134,7 @@ passport.deserializeUser(function(user, done) {
           callback(game);
         });
       };
-      Games.save(req.body.opponent, req.body.date, req.body.time, req.body.location, req.body.ourScore, req.body.theirScore, function(game){
+      Games.save(req.body.opponent, req.body.date, req.body.time, req.body.location, function(game){
         res.status(201).json(game);
       }, function(err){
         res.status(400).json(err);

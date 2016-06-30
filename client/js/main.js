@@ -1,7 +1,7 @@
 //var Model = require("./model.js");
 
 $(document).ready(function(){
-  $('#addGameModule #datepicker').pikaday({ firstDay: 1 }); // activate datepicker
+  
   var view = new View();
   var model = new Model();
   var authUser = new AuthUser();
@@ -12,6 +12,7 @@ $(document).ready(function(){
   model.authUser = authUser;
   model.game = game;
   game.model = model;
+  game.view = view;
   
  
   

@@ -13,6 +13,7 @@
     <header>
         <div>
           <h5 class="login">Log In</h5>
+          <h5 class="hidden logout">Log Out</h5>
           <form>
             <input class = "hidden login" id="username" type="text" name="username" required=true placeholder="email">
             <input class="hidden login" id="password" type="text" name="password" required=true placeholder="password">
@@ -55,14 +56,16 @@
         </div>
         <!-- if a new game gets this place, move this current game property to upcoming -->
         
+        
+        <!-- ADD GAME MODULE -->
         <div id="addGameModule" class="hidden">
-          <h4>Add a Game</h4>
+          <h5>Add a Game</h5>
            <div>
-          <input class="opponent" type="text" placeholder="opponent">
+          <input id="opponentInput" type="text" placeholder="opponent">
           <input id="datepicker" class="date" type="text" placeholder="date">
-          <input class="time" placeholder="time">
-          <input class="location" placeholder="location">
-          <input class="submitAddGame" type="button" value="+">
+          <input id="timeInput" placeholder="time">
+          <input id="locationInput" placeholder="location">
+          <div id="submitAddGame"><p>+</p></div>
           </div>
         </div>
         
@@ -152,6 +155,7 @@
     <script src="/js/main.js"></script>
     <script src="/js/model.js"></script>
     <script src="/js/view.js"></script>
+    <script src="/js/moment.js"></script>
     <script src="/js/pikaday.js"></script>
     <script src="/js/pikaday-plugin.js"></script>
     

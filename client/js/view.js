@@ -8,11 +8,12 @@ var View = function(){
     this.addGameButton = $('#addGameButton');
     this.addGameButton.on("click", this.showAddGameModule.bind(this));
     this.addGameModule = $("#addGameModule");
-    this.submitAddGame = $("#addGameModule .submitAddGame");
+    this.submitAddGame = $("#submitAddGame");
     this.submitAddGame.on("click", this.updateGameValues.bind(this));
     
     this.login = $("header div h5.login");
     this.login.on("click", this.toggleLogin.bind(this));
+    this.logout = $("header div h5.logout");
     
     this.username = $("#username");
     this.password = $("#password");
@@ -69,16 +70,32 @@ View.prototype.toggleAddUser = function(){
 };
 View.prototype.showAddGameModule = function(){
     this.addGameModule.toggleClass("hidden");
+    var that = this;
+    $('#addGameModule #datepicker').pikaday({ firstDay: 1 }); // activate datepicker
+    that.picker = new Pikaday({ 
+        field: document.getElementById('datepicker'), 
+        onSelect: function() {
+            that.addGameDate = this.toString('YYYYMMDD');
+        }
+    });
 };
 View.prototype.updateGameValues = function(){
-    this.addGameOpponent = $("#addGameModule .opponent").value;
-    this.addGameDate = $("#addGameModule .date").value;
-    this.addGameTime = $("#addGameModule .time").value;
-    this.addGameLocation = $("#addGameModule .location").value;
-    this.addGameOurScore = $("#addGameModule .ourScore").value;
-    this.addGameTheirScore =$("#addGameModule .theirScore").value;
+    console.log("let's check what's been input");
+    this.addGameOpponent = document.getElementById("opponentInput").value;
+    //this.addGameDate = this.picker.getMoment();
+    console.log(typeof(this.addGameDate));
+    this.addGameTime = document.getElementById("timeInput").value;
+    this.addGameLocation = document.getElementById("locationInput").value;
+    //this.addGameOurScore = $("#addGameModule .ourScore").value;
+    //this.addGameTheirScore =$("#addGameModule .theirScore").value;
+    console.log(this.addGameDate);
+    var that = this;
     if(this.addGameOpponent !== "" || this.addGameDate !== "" || this.addGameTime !== "" || this.addGameLocation !== ""){
-        this.model.addGame.bind(this.model);
+        console.log("something's been added");
+        that.model.addGame();
+    }
+    else{
+        console.log("nothing's been added");
     }
 };
 View.prototype.toggleLogin = function(){
@@ -101,8 +118,10 @@ View.prototype.makeMapUrl = function(){
 
 View.prototype.showLoggedIn = function(){
     console.log("logged in");
-    this.login.text("Log out");
-    this.login.on("click", this.model.signout.bind(this.model));
+    this.login.addClass("hidden");
+    this.logout.removeClass("hidden");
+    var that = this;
+    this.logout.on("click", that.model.signout.bind(that.model));
     this.username.addClass("hidden");
     this.password.addClass("hidden");
     this.submitLogin.addClass("hidden");
@@ -115,16 +134,16 @@ View.prototype.notLoggedIn = function(){
 }
 
 View.prototype.userAdded = function() {
-    //this.addUsername.val("");
-    //this.addUserRole.val("player");
-    this.message.text("user added").delay(4000).text("");
+    console.log("added user");
+    this.toggleAddUser();
+    this.addUsernameVal.text("");
 };
 
 View.prototype.onSignOut = function(){
     this.addUserButton.addClass("hidden");
     this.addGameButton.addClass("hidden");
-    this.login.text("Log in");
-    this.login.on("click", this.toggleLogin.bind(this));
+    this.logout.addClass("hidden");
+    this.login.removeClass("hidden");
 };
 /*  Would be nice to have an autocomplete in the addGameModule
 Model.prototype.mapAutocomplete = function(input){

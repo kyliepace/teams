@@ -124,8 +124,8 @@ section {
   color: #FEF5E8;
   box-shadow: 0 0 1px 8px #133582;
 }
-#addGameModule h4 {
-  margin: 20px 0px;
+#addGameModule h5 {
+  margin: 10px 0px;
 }
 #addGameModule div {
   width: 170px;

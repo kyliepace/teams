@@ -58,39 +58,64 @@ Model.prototype.onGetUsersDone = function(users) {
     }
 };
 Model.prototype.addUser = function() {
-    console.log(this.view.addUsernameVal);
-    var user = {'username': this.view.addUsernameVal, 'role': this.view.addUserRoleVal};
+    var that = this;
+    console.log(this.view.addUsernameVal+" "+this.view.addUserRoleVal);
+    var addUser = ({'username': this.view.addUsernameVal, 'role': this.view.addUserRoleVal});
     var ajax = $.ajax('/users', {
         type: 'POST',
-        data: JSON.stringify(user),
-        dataType: 'json'
-        //contentType: 'application/json'
+        data: JSON.stringify(addUser),
+        dataType: 'json',
+        contentType: 'application/json'
     });
-    ajax.done(this.view.userAdded.bind(this.view));
+    ajax.done(that.view.userAdded.bind(that.view));
 };
 
-Model.prototype.signout = function(){
+Model.prototype.signout = function(){ //doesn't seem to refresh the page
+    console.log("goodbye");
+    var that = this;
     var ajax = $.ajax("/signout", {
         type: "GET", 
         dataType: "json"
     });
-    ajax.done(this.view.onSignOut.bind(this.view));
+    //ajax.done(that.view.onSignOut.bind(that.view));
 };
 Model.prototype.addGame = function() {
-    var game = {'opponent': this.view.addGameOpponent, "date": this.view.addGameDate, "time": this.view.addGameTime, "location":this.view.addGameLocation, "ourScore":this.view.addGameOurScore, "theirScore":this.view.addGameTheirScore};
+    console.log("let's add a game");
     var that = this;
+    console.log(that.view.addGameDate);
+    var game = ({'opponent': that.view.addGameOpponent, "date": that.view.addGameDate, "time": that.view.addGameTime, "location":that.view.addGameLocation});
     var ajax = $.ajax('/games', {
         type: 'POST',
         data: JSON.stringify(game),
         dataType: 'json',
-        //contentType: 'application/json'
+        contentType: 'application/json'
     });
-    ajax.done(that.game.saveGame.bind(this.game));
+    ajax.done(that.game.saveGame.bind(that.game));
 };
 Model.prototype.updateGames = function(){
     this.games.push(this.game);
+    console.log("games updated");
+    console.log(this.games);
+    this.game = {}; //clear game object
+    var today = new Date();
+    var date = today.getDate().toString();
+    var month = today.getMonth().toString();
+    var year = today.getFullYear().toString();
+    var todaysdate = year+month+date;
+    console.log(todaysdate);
+    var upcomingGames = [];
     //find next upcoming game from this.games array
-    //append this.game to correct place on webpage
+    this.games.forEach(function(game){
+        if (game.date>=todaysdate){
+            upcomingGames.push(game);
+        }
+    });
+    upcomingGames.sort(function(a, b){
+        return a>b ? -1 : a<b ? 1 : 0; //returns games from most recent
+    });
+    console.log(upcomingGames);
+    // append upcomingGames[0] to nextGame place on webpage
+   
     //if this.game goes into the next upcoming game spot, move the one that was there (if any) to upcoming games
             //and then update the this.view.staticmap with a new background url and a href link
 };
@@ -117,13 +142,14 @@ var Game = function(){
 };
 
 Game.prototype.saveGame = function(){
+    console.log("talking to the games object");
     this.opponent = this.view.addGameOpponent;
     this.date = this.view.addGameDate;
     this.time = this.view.addGameTime;
     this.location = this.view.addGameLocation;
     this.ourScore = this.view.addGameOurScore;
     this.theirScore = this.view.addGameTheirScore;
-    this.model.updateGames().bind(this.model);
+    this.model.updateGames();
 };
 
 
