@@ -34,22 +34,20 @@ var View = function(){
     this.submitNewUser = $("#submitNewUser");
     this.submitNewUser.on("click", this.updateNewInputValues.bind(this));
     
-    //click on existing game to model.editGame
+    this.pastGames = $("#past .games");
+    this.nextGame = $("#next .games");
+    this.upcomingGames = $("#upcoming .games");
+    this.map = $("#map");
     
-    this.staticMap = {
-        base:"https://maps.googleapis.com/maps/api/staticmap?",
-        center: "",//make sure input string replaces spaces with +
-        maptype:"terrain",
-        visual_refresh:"true",
-        scale:"2",
-        size:"4000x300",
-        markers: "size:small%7Ccolor:0xff0000%7C",
-        label :"",
-        zoom :13, 
-        url: ""
-    };
+    //click on existing game to model.editGame
 };
 
+////////// [[[[[[[[[ LOGGING ING ]]]]]]]]]] //////////
+View.prototype.toggleLogin = function(){
+    this.username.toggleClass("hidden");
+    this.password.toggleClass("hidden");
+    this.submitLogin.toggleClass("hidden");
+};
 View.prototype.updateInputValues = function(){
     console.log("inputs updated");
     this.usernameVal = document.getElementById("username").value;
@@ -59,14 +57,21 @@ View.prototype.updateInputValues = function(){
         that.model.checkUser();
     }
 };
-View.prototype.updateNewInputValues = function(){
-    this.addUsernameVal =  document.getElementById("newUsername").value;
-    this.addUserRoleVal = document.getElementById("newRole").value;
-    this.model.addUser();
+View.prototype.showLoggedIn = function(){
+    console.log("logged in");
+    this.login.addClass("hidden");
+    this.logout.removeClass("hidden");
+    var that = this;
+    this.logout.on("click", that.model.signout.bind(that.model));
+    this.username.addClass("hidden");
+    this.password.addClass("hidden");
+    this.submitLogin.addClass("hidden");
+    this.addUserButton.removeClass("hidden"); //make this a condition of authUser.role
+    this.addGameButton.removeClass("hidden");
 };
-View.prototype.toggleAddUser = function(){
-    this.addUsername.toggleClass("hidden");
-    this.addUserRole.toggleClass("hidden");
+
+View.prototype.notLoggedIn = function(){
+    this.message.text("try again");
 };
 View.prototype.showAddGameModule = function(){
     this.addGameModule.toggleClass("hidden");
@@ -78,6 +83,32 @@ View.prototype.showAddGameModule = function(){
         }
     }); 
 };
+View.prototype.onNewUserLogIn = function() {
+    console.log("welcome new user");
+    //notify that password has been saved
+    this.message.text("Welcome! Your password has been saved");
+    this.showLoggedIn();
+};
+
+
+//////////// ADDING A NEW USER /////////////////////////////////////////////////
+View.prototype.toggleAddUser = function(){
+    this.addUsername.toggleClass("hidden");
+    this.addUserRole.toggleClass("hidden");
+};
+View.prototype.updateNewInputValues = function(){
+    this.addUsernameVal =  document.getElementById("newUsername").value;
+    this.addUserRoleVal = document.getElementById("newRole").value;
+    this.model.addUser();
+};
+View.prototype.userAdded = function() {
+    console.log("added user");
+    this.toggleAddUser();
+    this.addUsernameVal.text("");
+};
+
+
+/////////////// ADDING A NEW GAME /////////////////////////
 View.prototype.updateGameValues = function(){
     console.log("let's check what's been input");
     this.addGameOpponent = document.getElementById("opponentInput").value;
@@ -95,51 +126,63 @@ View.prototype.updateGameValues = function(){
 };
 View.prototype.clearAddGameModule = function(){
     console.log("clearing Game Module");
-    this.addGameOpponent = "";
-    this.addGameTime = "";
-    this.addGameLocation = "";
+    document.getElementById("timeInput").value = "";
+    document.getElementById("opponentInput").value = "";
+    document.getElementById("locationInput").value = "";
     document.getElementById("datepicker").value = "";
 };
-View.prototype.toggleLogin = function(){
-    this.username.toggleClass("hidden");
-    this.password.toggleClass("hidden");
-    this.submitLogin.toggleClass("hidden");
-};
 
-View.prototype.onNewUserLogIn = function() {
-    console.log("welcome new user");
-    //notify that password has been saved
-    this.message.text("Welcome! Your password has been saved");
-    this.showLoggedIn();
+
+//////////////// ARRANGING GAMES ON DOM///////////////
+View.prototype.showUpcomingGames = function(){ //use this.model.upcomingGames array. 0th position goes into next game space, the rest get arranged in the upcoming game space
+    var that = this;
+    this.nextGame.prepend(this.makeTemplate(that.model.upcomingGames[0]));
+    this.updateMap();
+    for (var i = 1; i<that.model.upcomingGames.length; i++){
+        var futureGame = this.makeTemplate(that.model.upcomingGames[i]);
+        this.upcomingGames.append(futureGame);
+    }
 };
+View.prototype.makeTemplate = function(game){
+    return "<div class=\"game\"><p class=\"opponent\">"+game.opponent+"</p><input class=\"hidden opponent\" type=\"text\" placeholder=\"opponent\">\
+          <p class=\"date\">"+game.date+"</p><input id=\"datepicker\" class=\"hidden date\"  placeholder=\"date\">\
+          <p class=\"time\">"+game.time+"</p><input class=\"hidden time\" placeholder=\"time\">\
+          <p class=\"location\">"+game.location+"</p><input class=\"hidden location\" placeholder=\"location\"></div>";
+};
+View.prototype.showPastGames = function(){
+    this.pastGameTemplate = "<div class=\"game\"><p class=\"opponent\">"+this.game.opponent+"</p><p class=\"date\">"+this.game.date+"\
+        </p><p class=\"time\">"+this.game.time+"</p><p class=\"location\">"+this.game.location+"</p><div class=\"scores\">\
+        <p class=\"ourScore\">"+this.game.ourScore+"</p><p class=\"theirScore\">"+this.game.theirScore+"</p><p class=\"deleteGame\">X</p></div></div>";
+    this.pastGames.append(this.pastGameTemplate);
+    this.game.clearObject();
+};
+View.prototype.updateMap = function(){
+    var nextGame = this.model.upcomingGames[0];
+    var that = this;
+    this.staticMap = {
+        base:"https://maps.googleapis.com/maps/api/staticmap?",
+        center: that.model.upcomingGames[0].location.replace(" ","+"),
+        maptype:"terrain",
+        visual_refresh:"true",
+        scale:"2",
+        size:"4000x300",
+        markers: "size:small%7Ccolor:0xff0000%7C",
+        label : "",
+        zoom :13
+    };
+    this.makeMapUrl(); //combine static map components into a url and use as the map background
+}
 //e.g. "https://maps.googleapis.com/maps/api/staticmap?center=Sacramento,+CA&maptype=terrain&visual_refresh=true&scale=2&size=4000x300&markers=size:small%7Ccolor:0xff0000%7Clabel:1%7CSacramento&zoom=13"
 View.prototype.makeMapUrl = function(){
-    this.staticMap.url = this.staticMap.base+"center"+this.staticMap.center+"&maptype="+this.staticMap.terrain+"&visual_refresh="+this.staticMap.visual_refresh+"&scale="+this.staticMap.scale+"&size="+this.staticMap.size+"&markers="+this.staticMap.markers+"label:"+this.staticMap.label+"&zoom="+this.staticMap.zoom;
-    return this.staticMap.url; //in controller, pass this.url into $("#map").css("background-image", url());
-};
-
-View.prototype.showLoggedIn = function(){
-    console.log("logged in");
-    this.login.addClass("hidden");
-    this.logout.removeClass("hidden");
     var that = this;
-    this.logout.on("click", that.model.signout.bind(that.model));
-    this.username.addClass("hidden");
-    this.password.addClass("hidden");
-    this.submitLogin.addClass("hidden");
-    this.addUserButton.removeClass("hidden"); //make this a condition of authUser.role
-    this.addGameButton.removeClass("hidden");
+    this.staticMap.url = this.staticMap.base+"center"+this.staticMap.center+"&maptype="+this.staticMap.terrain+"&visual_refresh="+this.staticMap.visual_refresh+"&scale="+this.staticMap.scale+"&size="+this.staticMap.size+"&markers="+this.staticMap.markers+"label:"+this.staticMap.label+"&zoom="+this.staticMap.zoom;
+    this.map.css("background-image", "url("+that.staticMap.url+")"); //change the background
+    this.map.attr("href", that.staticMap.url); //add a link
 };
 
-View.prototype.notLoggedIn = function(){
-    this.message.text("try again");
-}
 
-View.prototype.userAdded = function() {
-    console.log("added user");
-    this.toggleAddUser();
-    this.addUsernameVal.text("");
-};
+
+
 
 View.prototype.onSignOut = function(){
     this.addUserButton.addClass("hidden");

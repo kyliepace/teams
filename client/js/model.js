@@ -2,7 +2,8 @@ var Model = function() {
     this.view;
     this.authUser;
     this.game;
-    this.games = [];
+    this.games = []; //populate from server
+    this.upcomingGames = []; 
 };
 
 Model.prototype.checkUser = function() {
@@ -80,10 +81,11 @@ Model.prototype.signout = function(){ //doesn't seem to refresh the page
     //ajax.done(that.view.onSignOut.bind(that.view));
 };
 Model.prototype.addGame = function() {
-    console.log("let's add a game");
+    console.log("adding game");
     var that = this;
     console.log(that.view.addGameDate);
     var game = ({'opponent': that.view.addGameOpponent, "date": that.view.addGameDate.toString(), "time": that.view.addGameTime, "location":that.view.addGameLocation});
+    this.games.push(game);
     var ajax = $.ajax('/games', {
         type: 'POST',
         data: JSON.stringify(game),
@@ -93,31 +95,31 @@ Model.prototype.addGame = function() {
     ajax.done(that.game.saveGame.bind(that.game));
 };
 Model.prototype.updateGames = function(){
-    var newGame = {opponent: this.game.opponent, date: this.game.date.data, time: this.game.time, location: this.game.location};
-    this.games.push(newGame);
-    console.log("games updated");
-    console.log(this.game);
-    console.log(newGame);
     var that = this;
-    this.game.clearObject();
     var today = new Date();
-    this.upcomingGames = [];
     //find next upcoming game from this.games array
     this.games.forEach(function(game){
         if(moment(game.date).isSameOrAfter(today)){
             that.upcomingGames.push(game);
+            that.sortUpcomingGames();
+        }
+        else{
+            that.view.showPastGames().bind(that.view);
         }
     });
-
-    that.upcomingGames.sort(function(a, b){
+};
+Model.prototype.sortUpcomingGames = function(){
+    this.upcomingGames.sort(function(a, b){
         return a>b ? -1 : a<b ? 1 : 0; //returns games from most recent
     });
-    console.log(that.upcomingGames);
+    console.log(this.upcomingGames);
+    this.view.showUpcomingGames.bind(this.view);
     // append upcomingGames[0] to nextGame place on webpage
    
     //if this.game goes into the next upcoming game spot, move the one that was there (if any) to upcoming games
             //and then update the this.view.staticmap with a new background url and a href link
 };
+    
 Model.prototype.editGame= function(game) {
     //toggleClass("hidden") to all the ps and the inputs in the selected game
 };
