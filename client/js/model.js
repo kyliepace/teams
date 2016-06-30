@@ -83,7 +83,7 @@ Model.prototype.addGame = function() {
     console.log("let's add a game");
     var that = this;
     console.log(that.view.addGameDate);
-    var game = ({'opponent': that.view.addGameOpponent, "date": that.view.addGameDate, "time": that.view.addGameTime, "location":that.view.addGameLocation});
+    var game = ({'opponent': that.view.addGameOpponent, "date": that.view.addGameDate.toString(), "time": that.view.addGameTime, "location":that.view.addGameLocation});
     var ajax = $.ajax('/games', {
         type: 'POST',
         data: JSON.stringify(game),
@@ -93,27 +93,26 @@ Model.prototype.addGame = function() {
     ajax.done(that.game.saveGame.bind(that.game));
 };
 Model.prototype.updateGames = function(){
-    this.games.push(this.game);
+    var newGame = {opponent: this.game.opponent, date: this.game.date.data, time: this.game.time, location: this.game.location};
+    this.games.push(newGame);
     console.log("games updated");
-    console.log(this.games);
-    this.game = {}; //clear game object
+    console.log(this.game);
+    console.log(newGame);
+    var that = this;
+    this.game.clearObject();
     var today = new Date();
-    var date = today.getDate().toString();
-    var month = today.getMonth().toString();
-    var year = today.getFullYear().toString();
-    var todaysdate = year+month+date;
-    console.log(todaysdate);
-    var upcomingGames = [];
+    this.upcomingGames = [];
     //find next upcoming game from this.games array
     this.games.forEach(function(game){
-        if (game.date>=todaysdate){
-            upcomingGames.push(game);
+        if(moment(game.date).isSameOrAfter(today)){
+            that.upcomingGames.push(game);
         }
     });
-    upcomingGames.sort(function(a, b){
+
+    that.upcomingGames.sort(function(a, b){
         return a>b ? -1 : a<b ? 1 : 0; //returns games from most recent
     });
-    console.log(upcomingGames);
+    console.log(that.upcomingGames);
     // append upcomingGames[0] to nextGame place on webpage
    
     //if this.game goes into the next upcoming game spot, move the one that was there (if any) to upcoming games
@@ -142,14 +141,24 @@ var Game = function(){
 };
 
 Game.prototype.saveGame = function(){
-    console.log("talking to the games object");
+    console.log("Game.saveGame");
     this.opponent = this.view.addGameOpponent;
     this.date = this.view.addGameDate;
+    console.log(this.view.addGameDate);
     this.time = this.view.addGameTime;
     this.location = this.view.addGameLocation;
     this.ourScore = this.view.addGameOurScore;
     this.theirScore = this.view.addGameTheirScore;
     this.model.updateGames();
+};
+
+Game.prototype.clearObject = function(){
+    console.log("clearing game object");
+    this.opponent = "";
+    this.time = "";
+    this.date = "";
+    this.location = "";
+    this.view.clearAddGameModule();
 };
 
 

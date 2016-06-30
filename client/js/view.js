@@ -71,32 +71,34 @@ View.prototype.toggleAddUser = function(){
 View.prototype.showAddGameModule = function(){
     this.addGameModule.toggleClass("hidden");
     var that = this;
-    $('#addGameModule #datepicker').pikaday({ firstDay: 1 }); // activate datepicker
-    that.picker = new Pikaday({ 
-        field: document.getElementById('datepicker'), 
+    $('#addGameModule #datepicker').pikaday({ 
+        firstDay: 1,
         onSelect: function() {
-            that.addGameDate = this.toString('YYYYMMDD');
+            that.addGameDate = document.createTextNode(this.getMoment().format('YYYY MM DD'));
         }
-    });
+    }); 
 };
 View.prototype.updateGameValues = function(){
     console.log("let's check what's been input");
     this.addGameOpponent = document.getElementById("opponentInput").value;
-    //this.addGameDate = this.picker.getMoment();
     console.log(typeof(this.addGameDate));
     this.addGameTime = document.getElementById("timeInput").value;
     this.addGameLocation = document.getElementById("locationInput").value;
-    //this.addGameOurScore = $("#addGameModule .ourScore").value;
-    //this.addGameTheirScore =$("#addGameModule .theirScore").value;
-    console.log(this.addGameDate);
     var that = this;
-    if(this.addGameOpponent !== "" || this.addGameDate !== "" || this.addGameTime !== "" || this.addGameLocation !== ""){
+    if(this.addGameOpponent !== "" || this.addGameDate.toString() !== "" || this.addGameTime !== "" || this.addGameLocation !== ""){
         console.log("something's been added");
         that.model.addGame();
     }
     else{
         console.log("nothing's been added");
     }
+};
+View.prototype.clearAddGameModule = function(){
+    console.log("clearing Game Module");
+    this.addGameOpponent = "";
+    this.addGameTime = "";
+    this.addGameLocation = "";
+    document.getElementById("datepicker").value = "";
 };
 View.prototype.toggleLogin = function(){
     this.username.toggleClass("hidden");
