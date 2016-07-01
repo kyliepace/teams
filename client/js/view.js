@@ -1,5 +1,3 @@
-//send request to google
-
 var View = function(){
     this.model;
     this.upcomingGamesDiv = $('#upcoming .games');
@@ -38,6 +36,12 @@ var View = function(){
     this.nextGame = $("#next .games");
     this.upcomingGames = $("#upcoming .games");
     this.map = $("#map");
+    this.deleteGameButton = $(".game p.deleteGame");
+    this.aGame = $(".game");
+    this.aGame.on("click", "p", function(){
+        var aGame = $(this).parent();
+        this.editGame(aGame);
+    });
     
     //click on existing game to model.editGame
 };
@@ -68,6 +72,9 @@ View.prototype.showLoggedIn = function(){
     this.submitLogin.addClass("hidden");
     this.addUserButton.removeClass("hidden"); //make this a condition of authUser.role
     this.addGameButton.removeClass("hidden");
+    if(this.model.authUser.role === "manager"){
+        that.deleteGameButton.removeClass("hidden");
+    }
 };
 
 View.prototype.notLoggedIn = function(){
@@ -79,7 +86,8 @@ View.prototype.showAddGameModule = function(){
     $('#addGameModule #datepicker').pikaday({ 
         firstDay: 1,
         onSelect: function() {
-            that.addGameDate = document.createTextNode(this.getMoment().format('YYYY MM DD'));
+            that.addGameDate = document.createTextNode(this.getMoment().format("MM/DD/YYYY")); //view.addGameDate should be a moment
+            that.gameDate = this.getMoment().format("MM/DD/YYYY");
         }
     }); 
 };
@@ -134,27 +142,29 @@ View.prototype.clearAddGameModule = function(){
 
 
 //////////////// ARRANGING GAMES ON DOM///////////////
-View.prototype.showUpcomingGames = function(){ //use this.model.upcomingGames array. 0th position goes into next game space, the rest get arranged in the upcoming game space
+View.prototype.showUpcomingGame = function(){ //use this.model.upcomingGames array. 0th position goes into next game space, the rest get arranged in the upcoming game space
     var that = this;
     this.nextGame.prepend(this.makeTemplate(that.model.upcomingGames[0]));
     this.updateMap();
-    for (var i = 1; i<that.model.upcomingGames.length; i++){
+    /*for (var i = 1; i<that.model.upcomingGames.length; i++){
         var futureGame = this.makeTemplate(that.model.upcomingGames[i]);
         this.upcomingGames.append(futureGame);
-    }
+    }*/ //do this upon loading the page
+    this.model.game.clearObject(); //which calls view.clearAddGameModule();
 };
 View.prototype.makeTemplate = function(game){
     return "<div class=\"game\"><p class=\"opponent\">"+game.opponent+"</p><input class=\"hidden opponent\" type=\"text\" placeholder=\"opponent\">\
-          <p class=\"date\">"+game.date+"</p><input id=\"datepicker\" class=\"hidden date\"  placeholder=\"date\">\
+          <p class=\"date\">"+game.date.toString()+"</p><input id=\"datepicker\" class=\"hidden date\"  placeholder=\"date\">\
           <p class=\"time\">"+game.time+"</p><input class=\"hidden time\" placeholder=\"time\">\
           <p class=\"location\">"+game.location+"</p><input class=\"hidden location\" placeholder=\"location\"></div>";
 };
-View.prototype.showPastGames = function(){
-    this.pastGameTemplate = "<div class=\"game\"><p class=\"opponent\">"+this.game.opponent+"</p><p class=\"date\">"+this.game.date+"\
-        </p><p class=\"time\">"+this.game.time+"</p><p class=\"location\">"+this.game.location+"</p><div class=\"scores\">\
-        <p class=\"ourScore\">"+this.game.ourScore+"</p><p class=\"theirScore\">"+this.game.theirScore+"</p><p class=\"deleteGame\">X</p></div></div>";
+View.prototype.showPastGame = function(){
+    var that = this;
+    this.pastGameTemplate = "<div class=\"game\"><p class=\"opponent\">"+that.model.game.opponent+"</p><p class=\"date\">"+that.model.game.date.toString()+"\
+        </p><p class=\"time\">"+that.model.game.time+"</p><p class=\"location\">"+that.model.game.location+"</p><div class=\"scores\">\
+        <p class=\"ourScore\">"+that.model.game.ourScore+"</p><p class=\"theirScore\">"+that.model.game.theirScore+"</p><p class=\"hidden deleteGame\">X</p></div></div>";
     this.pastGames.append(this.pastGameTemplate);
-    this.game.clearObject();
+    this.model.game.clearObject();
 };
 View.prototype.updateMap = function(){
     var nextGame = this.model.upcomingGames[0];
@@ -179,10 +189,10 @@ View.prototype.makeMapUrl = function(){
     this.map.css("background-image", "url("+that.staticMap.url+")"); //change the background
     this.map.attr("href", that.staticMap.url); //add a link
 };
-
-
-
-
+View.prototype.editGame = function(game){
+    game.children("input").toggleClass("hidden");
+    game.children("p").toggleClass("hidden");
+};
 
 View.prototype.onSignOut = function(){
     this.addUserButton.addClass("hidden");

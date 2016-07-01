@@ -199,6 +199,26 @@ passport.deserializeUser(function(user, done) {
             res.status(400).json(err);
         });
     });
+  ////////// DELETE A GAME /////////
+  app.delete("/games/:id", function(req, res){
+    var _id=req.params.id;
+    Games.delete = function(_id, callback, errback){
+      Games.findOneAndRemove({_id:_id}, function(err, item){
+        if(err){
+          errback(err);
+          return;
+        }
+        callback(game);
+      });
+    };
+    Games.delete(_id, function(game){
+      res.status(200).json(game);
+    }, function(err){
+      res.status(400).json(err);
+    });
+  });
+
+
 
 
 

@@ -96,24 +96,23 @@ Model.prototype.addGame = function() {
 };
 Model.prototype.updateGames = function(){
     var that = this;
-    var today = new Date();
-    //find next upcoming game from this.games array
-    this.games.forEach(function(game){
-        if(moment(game.date).isSameOrAfter(today)){
-            that.upcomingGames.push(game);
-            that.sortUpcomingGames();
-        }
-        else{
-            that.view.showPastGames().bind(that.view);
-        }
-    });
+   console.log(that.view.gameDate);
+   console.log(typeof(that.view.gameDate));
+   //console.log(that.view.addGameDate.fromNow());
+   console.log(moment(that.view.gameDate).isBefore());
+   if(moment(that.view.gameDate).isBefore()){
+       that.view.showPastGame();
+   }
+   else{
+       that.view.showUpcomingGame();
+   }
 };
 Model.prototype.sortUpcomingGames = function(){
     this.upcomingGames.sort(function(a, b){
         return a>b ? -1 : a<b ? 1 : 0; //returns games from most recent
     });
     console.log(this.upcomingGames);
-    this.view.showUpcomingGames.bind(this.view);
+    this.view.showUpcomingGame.bind(this.view);
     // append upcomingGames[0] to nextGame place on webpage
    
     //if this.game goes into the next upcoming game spot, move the one that was there (if any) to upcoming games
@@ -149,8 +148,18 @@ Game.prototype.saveGame = function(){
     console.log(this.view.addGameDate);
     this.time = this.view.addGameTime;
     this.location = this.view.addGameLocation;
-    this.ourScore = this.view.addGameOurScore;
-    this.theirScore = this.view.addGameTheirScore;
+    if(this.view.addGameOurScore !== undefined){
+        this.ourScore = this.view.addGameOurScore;
+    }
+    else{
+        this.ourScore = "";
+    }
+    if(this.view.addGameTheirScore !== undefined){
+        this.theirScore = this.view.addGameTheirScore;
+    }
+    else{
+        this.theirScore = "";
+    }
     this.model.updateGames();
 };
 
