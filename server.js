@@ -60,7 +60,7 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
  ///////// LOG IN & OUT /////
-    /* Handle Login  */
+    // Handle Login  [[[[[[[[[[[[[[
     app.post('/login', passport.authenticate('login', {
         session: true,
         //successRedirect: '/home',
@@ -69,10 +69,12 @@ passport.deserializeUser(function(user, done) {
       }), function(req, res){
         res.json({status: "success" });
     });
-    /* Handle Logout */
+    
+    // Handle Logout ]]]]]]]]]]]]]
   app.get('/signout', function(req, res) {
     req.logout();
-    res.redirect('/'); //send a normal result back instead and locally destroy the session in passport
+    res.json({status: "goodbye"});
+    //res.redirect('/'); //send a normal result back instead and locally destroy the session in passport
   });
     
 /////// GET LIST OF USERS////////////

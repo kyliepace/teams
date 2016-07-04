@@ -16,10 +16,9 @@
           <h5 class="hidden logout">Log Out</h5>
           <form>
             <input class = "hidden login" id="username" type="text" name="username" required=true placeholder="email">
-            <input class="hidden login" id="password" type="text" name="password" required=true placeholder="password">
+            <input class="hidden login" id="password" type="password" name="password" required=true placeholder="password">
             <input id="submitLogin" class = "hidden login"  type="button" value="play ball!">
           </form>
-          <p id="message"></p>
           
           <h5 class="hidden addUser">Add User</h5>
           <input class = "hidden addUser addUserInput" type="text" id="newUsername" required=true placeholder="their email">
@@ -28,6 +27,7 @@
             <option value="manager">Manager</option>
           </select>
           <input id="submitNewUser" class = "hidden addUser addUserInput"  type = "button" value="invite user!">
+          <p id="message"></p>
         </div>
         
         <h1>GO TEAMNAME!</h1>
@@ -82,11 +82,11 @@
     
     <!--  /////// MAP /////////// -->
     <div id="mapOverlay">
-    <section id="map" a href = "">
-      
+    <a id = "mapLink" href="" target = "_blank">
+      <section id="map">
         <h4>Directions</h4>
-      
-    </section>
+      </section>
+    </a>
     </div>
     
     <!-- ////// ROSTER ///////////// -->

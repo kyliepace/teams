@@ -95,7 +95,7 @@ Model.prototype.getGames = function(){
         });
         that.sortUpcomingGames();
         console.log(that.upcomingGames);
-        that.view.deleteGameButton.addClass("hidden");
+        $(".deleteGame").addClass("hidden");
     });
 };
 
@@ -185,7 +185,15 @@ Model.prototype.signout = function(){ //doesn't seem to refresh the page
         dataType: "json",
         contentType: "application/json"
     });
-    ajax.done(that.view.onSignOut.bind(that.view));
+    ajax.done(function(response){
+        if(response.status === "goodbye"){
+            console.log("goodbye");
+            that.view.onSignOut();
+        }
+        else{
+            console.log("not logged out");
+        }
+    });
 };
 
 

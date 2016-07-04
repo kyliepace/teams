@@ -15,7 +15,7 @@ $(document).ready(function(){
   game.view = view;
   
   model.getGames();
-
+    
   view.passwordInput.on("keydown", function(event){
         if(event.keyCode === 13){
             view.updateInputValues();

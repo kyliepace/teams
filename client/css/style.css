@@ -59,6 +59,10 @@ header div #submitLogin:active {
   animation-iteration-count: 1;
   border: none;
 }
+header div p {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0px 5px;
+}
 header div select {
   margin-left: 3px;
 }
@@ -352,7 +356,7 @@ section {
 }
 #mapOverlay #map {
   height: 300px;
-  background-image: url("https://maps.googleapis.com/maps/api/staticmap?center=Sacramento,+CA&maptype=terrain&visual_refresh=true&scale=2&size=4000x300&markers=size:small%7Ccolor:0xff0000%7Clabel:1%7CSacramento&zoom=13");
+  background-image: ;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -392,6 +396,10 @@ section {
 #mapOverlay:hover #map h4::before {
   opacity: 0;
   transform: scale3d(1, 1, 1);
+}
+#mapLink {
+  color: #133582;
+  text-decoration: none;
 }
 #roster {
   min-height: 200px;

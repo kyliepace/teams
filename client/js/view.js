@@ -2,7 +2,7 @@ var View = function(){
     this.model;
     this.upcomingGamesDiv = $('#upcoming .games');
     this.game = $(".game");
-    ////////// ADD GAME MODULE //////////////
+   
     this.addGameButton = $('#addGameButton');
     this.addGameButton.on("click", this.showAddGameModule.bind(this));
     this.addGameModule = $("#addGameModule");
@@ -25,6 +25,8 @@ var View = function(){
     this.addUserRole = $("header select");
     this.addUserButton = $("header h5.addUser");
     this.addUserButton.on("click", this.toggleAddUser.bind(this)); 
+    this.addGameOpponent = document.getElementById("opponentInput").value;
+    this.addGameTime = document.getElementById("timeInput").value;
     
     this.submitNewUser = $("#submitNewUser");
     this.submitNewUser.on("click", this.updateNewInputValues.bind(this));
@@ -103,7 +105,7 @@ View.prototype.updateNewInputValues = function(){
 View.prototype.userAdded = function() {
     console.log("added user");
     this.toggleAddUser();
-    this.addUsernameVal.text("");
+    this.addUsernameVal.value("");
 };
 
 
@@ -146,6 +148,7 @@ View.prototype.showNextGame = function(){ //use this.model.upcomingGames array. 
     var that = this;
     this.nextGame.children(".game").remove();
     this.nextGame.prepend(that.makeTemplate(that.model.upcomingGames[0].opponent, that.model.upcomingGames[0].date, that.model.upcomingGames[0].time, that.model.upcomingGames[0].location, "", "", that.model.upcomingGames[0].id));
+    
     this.updateMap();
 };
 View.prototype.addToUpcomingGames = function(){
@@ -155,20 +158,15 @@ View.prototype.addToUpcomingGames = function(){
     for (var i = 1; i<that.model.upcomingGames.length; i++){
         that.upcomingGames.append(that.makeTemplate(that.model.upcomingGames[i].opponent, that.model.upcomingGames[i].date, that.model.upcomingGames[i].time, that.model.upcomingGames[i].location, " ", " ", that.model.upcomingGames[i].id));
     }
+    
 };
 View.prototype.showPastGame = function(){
     var that = this;
     this.pastGames.append(that.makeTemplate(that.model.game.opponent, that.model.game.date, that.model.game.time, that.model.game.location, that.model.game.ourScore, that.model.game.theirScore, that.model.game.id));
     this.model.game.clearObject();
+    
 };
-//e.g. "https://maps.googleapis.com/maps/api/staticmap?center=Sacramento,+CA&maptype=terrain&visual_refresh=true&scale=2&size=4000x300&markers=size:small%7Ccolor:0xff0000%7Clabel:1%7CSacramento&zoom=13"
-View.prototype.makeMapUrl = function(){
-    var that = this;
-    this.staticMap.url = that.staticMap.base+"center="+that.staticMap.center+"&maptype="+this.staticMap.terrain+"&visual_refresh="+this.staticMap.visual_refresh+"&scale="+this.staticMap.scale+"&size="+this.staticMap.size+"&markers="+this.staticMap.markers+"label:"+this.staticMap.label+"&zoom="+this.staticMap.zoom;
-    console.log(that.staticMap.url);
-    this.map.css("background-image", "url("+that.staticMap.url+")"); //change the background
-    this.map.attr("href", that.staticMap.url); //add a link
-};
+
 View.prototype.updateMap = function(){
     var that = this;
     this.staticMap = {
@@ -186,6 +184,14 @@ View.prototype.updateMap = function(){
     console.log(this.staticMap.center);
     this.makeMapUrl(); //combine static map components into a url and use as the map background
 };
+//e.g. "https://maps.googleapis.com/maps/api/staticmap?center=Sacramento,+CA&maptype=terrain&visual_refresh=true&scale=2&size=4000x300&markers=size:small%7Ccolor:0xff0000%7Clabel:1%7CSacramento&zoom=13"
+View.prototype.makeMapUrl = function(){
+    var that = this;
+    this.staticMap.url = that.staticMap.base+"center="+that.staticMap.center+"&maptype="+this.staticMap.terrain+"&visual_refresh="+this.staticMap.visual_refresh+"&scale="+this.staticMap.scale+"&size="+this.staticMap.size+"&markers="+this.staticMap.markers+"label:"+this.staticMap.label+"&zoom="+this.staticMap.zoom;
+    console.log(that.staticMap.url);
+    this.map.css("background-image", "url("+that.staticMap.url+")"); //change the background
+    $("#mapLink").attr("href", "https://www.google.com/maps/dir//"+that.staticMap.center); //add a link
+};
 //////////////// EDITING AND DELETING GAMES ///////////////////
 View.prototype.editGame = function(game){
     game.children("input").toggleClass("hidden");
@@ -193,8 +199,15 @@ View.prototype.editGame = function(game){
 };
 
 View.prototype.onSignOut = function(){
+    console.log("logged out");
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("newUsername").value="";
+    $(".deleteGame").addClass("hidden");
     this.addUserButton.addClass("hidden");
     this.addGameButton.addClass("hidden");
+    this.addUsername.addClass("hidden");
+    this.addUserRole.addClass("hidden");
     this.logout.addClass("hidden");
     this.login.removeClass("hidden");
 };
