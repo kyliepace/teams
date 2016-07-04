@@ -6,6 +6,7 @@ var View = function(){
     this.addGameButton = $('#addGameButton');
     this.addGameButton.on("click", this.showAddGameModule.bind(this));
     this.addGameModule = $("#addGameModule");
+    
     this.submitAddGame = $("#submitAddGame");
     this.submitAddGame.on("click", this.updateGameValues.bind(this));
     
@@ -18,11 +19,7 @@ var View = function(){
     this.submitLogin = $('#submitLogin');
     this.submitLogin.on('click', this.updateInputValues.bind(this)); 
     this.passwordInput = $("header div .login");
-    this.passwordInput.keyup(function(event){
-        if(event.keyCode === 13){
-            this.submitLogin.trigger("click").bind(this);
-        }
-    });
+    
     this.message = $("#message");
     this.addUsername = $("header input.addUserInput");
     this.addUserRole = $("header select");
@@ -63,10 +60,10 @@ View.prototype.showLoggedIn = function(){
     this.username.addClass("hidden");
     this.password.addClass("hidden");
     this.submitLogin.addClass("hidden");
-    this.addUserButton.removeClass("hidden"); //make this a condition of authUser.role
     this.addGameButton.removeClass("hidden");
     if(this.model.authUser.role === "manager"){
        $(".deleteGame").removeClass("hidden");
+       that.addUserButton.removeClass("hidden");
     }
 };
 
@@ -74,6 +71,7 @@ View.prototype.notLoggedIn = function(){
     this.message.text("try again");
 };
 View.prototype.showAddGameModule = function(){
+    console.log("add a game");
     this.addGameModule.toggleClass("hidden");
     var that = this;
     $('#addGameModule #datepicker').pikaday({ 
@@ -87,8 +85,7 @@ View.prototype.showAddGameModule = function(){
 };
 View.prototype.onNewUserLogIn = function() {
     console.log("welcome new user");
-    //notify that password has been saved
-    this.message.text("Welcome! Your password has been saved");
+    this.message.text("Welcome! Your password has been saved"); //notify that password has been saved
     this.showLoggedIn();
 };
 
@@ -117,13 +114,14 @@ View.prototype.updateGameValues = function(){
     this.addGameTime = document.getElementById("timeInput").value;
     this.addGameLocation = document.getElementById("locationInput").value;
     var that = this;
-    if(this.addGameOpponent !== "" || this.addGameDate.toString() !== "" || this.addGameTime !== "" || this.addGameLocation !== ""){
+    if(this.addGameOpponent !== "" || this.gameDate.toString() !== "" || this.addGameTime !== "" || this.addGameLocation !== ""){
         console.log("something's been added");
         that.model.addGame();
     }
     else{
         console.log("nothing's been added");
     }
+    this.addGameModule.addClass("hidden");
 };
 View.prototype.clearAddGameModule = function(){
     console.log("clearing Game Module");
@@ -142,20 +140,21 @@ View.prototype.makeTemplate = function(opponent, date, time, location, ourScore,
           <p class=\"location\">"+location+"</p><input class=\"hidden location\"><div class=\"scores\">\
         <p class=\"ourScore\">"+ourScore+"</p><input class=\"hidden ourScore\"><p class=\"theirScore\">"+theirScore+"</p><input class=\"hidden theirScore\"></div>\
           <p class=\"hidden gameId\">"+id+"</p>\
-          <input class=\"hidden deleteGame\" value = \"X\" type=\"button\">";
+          <input class=\"deleteGame\" value = \"X\" type=\"button\">";
 };
 View.prototype.showNextGame = function(){ //use this.model.upcomingGames array. 0th position goes into next game space, the rest get arranged in the upcoming game space
     var that = this;
+    this.nextGame.children(".game").remove();
     this.nextGame.prepend(that.makeTemplate(that.model.upcomingGames[0].opponent, that.model.upcomingGames[0].date, that.model.upcomingGames[0].time, that.model.upcomingGames[0].location, "", "", that.model.upcomingGames[0].id));
     this.updateMap();
 };
 View.prototype.addToUpcomingGames = function(){
+    this.upcomingGames.empty();
     var that = this;
     console.log("adding to upcoming games");
     for (var i = 1; i<that.model.upcomingGames.length; i++){
         that.upcomingGames.append(that.makeTemplate(that.model.upcomingGames[i].opponent, that.model.upcomingGames[i].date, that.model.upcomingGames[i].time, that.model.upcomingGames[i].location, " ", " ", that.model.upcomingGames[i].id));
     }
-    this.addGameModule.addClass("hidden");
 };
 View.prototype.showPastGame = function(){
     var that = this;
@@ -169,24 +168,21 @@ View.prototype.makeMapUrl = function(){
     console.log(that.staticMap.url);
     this.map.css("background-image", "url("+that.staticMap.url+")"); //change the background
     this.map.attr("href", that.staticMap.url); //add a link
-    that.model.game.clearObject(); //which calls view.clearAddGameModule();
-    that.addGameModule.addClass("hidden");
 };
 View.prototype.updateMap = function(){
-    var nextGame = this.model.upcomingGames[0];
     var that = this;
     this.staticMap = {
         base:"https://maps.googleapis.com/maps/api/staticmap?",
-        center: that.model.game.location.replace(/ /g, '+'),
+        center: that.model.upcomingGames[0].location.replace(/ /g, '+'),
         maptype:"terrain",
         visual_refresh:"true",
         scale:"2",
         size:"4000x300",
         markers: "size:small%7Ccolor:0xff0000%7C",
-        label : that.model.game.location.replace(/ /g, '+'),
+        label : that.model.upcomingGames[0].location.replace(/ /g, '+'),
         zoom :13
     };
-    console.log(that.model.game.location);
+    console.log(that.model.upcomingGames[0].location);
     console.log(this.staticMap.center);
     this.makeMapUrl(); //combine static map components into a url and use as the map background
 };

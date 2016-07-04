@@ -15,6 +15,18 @@ $(document).ready(function(){
   game.view = view;
   
   model.getGames();
+
+  view.passwordInput.on("keydown", function(event){
+        if(event.keyCode === 13){
+            view.updateInputValues();
+        }
+    });
+    
+  view.addGameModule.on("keydown", "input", function(event){
+        if(event.keyCode === 13){
+            view.updateGameValues();
+        }
+  });
   
   view.games.on("click", ".deleteGame", function(){
         view.idToDelete = $(this).siblings(".gameId").text();
@@ -22,7 +34,6 @@ $(document).ready(function(){
         model.deleteGame(view.idToDelete);
         $(this).parent(".game").remove();
     });
-  
-  //view.game.on("click", view.submitAddGame, game.addGame.bind(game));
+
 });
 

@@ -2,10 +2,11 @@ var Model = function() {
     this.view;
     this.authUser;
     this.game;
-    this.games = []; //populate from server
     this.upcomingGames = []; 
 };
 
+
+///////////// LOGGING IN ///////////////////////////////////
 Model.prototype.checkUser = function() {
     console.log(this.view.usernameVal);
     var that = this;
@@ -17,8 +18,6 @@ Model.prototype.checkUser = function() {
         ajax.done(that.onGetUsersDone.bind(that));  //gets list of all users
     }
 };
-
-
 Model.prototype.onGetUsersDone = function(users) { 
     var that = this;
     var foundUser = {};
@@ -56,8 +55,8 @@ Model.prototype.onGetUsersDone = function(users) {
         ajax2.done(function(response){
             console.log(response.status);
             if(response.status === "success"){
-                that.view.showLoggedIn();
                 that.authUser.role = foundUser.role; 
+                that.view.showLoggedIn();
                 console.log(that.authUser.role);
             }
             else{
@@ -66,6 +65,8 @@ Model.prototype.onGetUsersDone = function(users) {
         });
     }
 };
+
+//////////////// ADDING USERS ///////////////////////////////////////
 Model.prototype.addUser = function() {
     var that = this;
     console.log(this.view.addUsernameVal+" "+this.view.addUserRoleVal);
@@ -78,18 +79,6 @@ Model.prototype.addUser = function() {
     });
     ajax.done(that.view.userAdded.bind(that.view));
 };
-
-Model.prototype.signout = function(){ //doesn't seem to refresh the page
-    console.log("goodbye");
-    var that = this;
-    var ajax = $.ajax("/signout", {
-        type: "GET", 
-        dataType: "json",
-        contentType: "application/json"
-    });
-    ajax.done(that.view.onSignOut.bind(that.view));
-};
-
 
 
 ////////////// GET SAVED GAMES ////////////////
@@ -106,30 +95,32 @@ Model.prototype.getGames = function(){
         });
         that.sortUpcomingGames();
         console.log(that.upcomingGames);
+        that.view.deleteGameButton.addClass("hidden");
     });
 };
-
-
 
 
 ////////[[[[[[[[[ ADD A GAME ]]]]]] //////////////////////////////
 Model.prototype.addGame = function() {
     console.log("adding game");
     var that = this;
-    console.log(that.view.addGameDate);
+    console.log(that.view.gameDate);
     var game = ({'opponent': that.view.addGameOpponent, "date": that.view.gameDate, "time": that.view.addGameTime, "location":that.view.addGameLocation});
-    this.games.push(game);
+    //this.games.push(game);
     var ajax = $.ajax('/games', {
         type: 'POST',
         data: JSON.stringify(game),
         dataType: 'json',
         contentType: 'application/json'
     });
-    ajax.done(function(){
-        that.game.saveGame.bind(that.game);
-        that.sortUpcomingGames();
+    ajax.done(function(game){
+        console.log("game added");
+        that.game.saveGame(game); //saves the game locally and calls model.updateGames()
+        that.view.clearAddGameModule();
     });
 };
+
+//////////// ARRANGING AND SORTING GAMES //////////////////////
 Model.prototype.updateGames = function(){
     var that = this;
     var game = ({'opponent': that.game.opponent, "date": that.game.date, "time": that.game.time, "location":that.game.location, "ourScore": that.game.ourScore, "theirScore": that.game.theirScore, "id":that.game.id});
@@ -138,7 +129,10 @@ Model.prototype.updateGames = function(){
    }
    else{
        that.upcomingGames.push(game);
-       //that.game.clearObject();
+       that.game.clearObject();
+   }
+   if(!that.view.logout.hasClass("hidden")){
+       that.sortUpcomingGames();
    }
 };
 Model.prototype.sortUpcomingGames = function(){
@@ -162,14 +156,37 @@ Model.prototype.deleteGame = function(id){
         dataType: 'json'
         //contentType: 'application/json'
     });
-    ajax.done(console.log("removed from database"));
+    ajax.done(function(game){
+        console.log("removed from database");
+        if(game._id === that.upcomingGames[0].id){
+            console.log("we need a new next game");
+            that.upcomingGames.shift();
+            that.view.showNextGame();
+            that.view.addToUpcomingGames();
+        }
+        for(var i = 1; i<that.upcomingGames.length; i++){
+            if(game._id === that.upcomingGames[i].id){
+                that.upcomingGames.splice(i,1);
+            }
+        }
+    });
 };
     
-Model.prototype.editGame= function(game) {
+/*Model.prototype.editGame= function(game) {
     //toggleClass("hidden") to all the ps and the inputs in the selected game
+};*/
+
+///////////////// SIGNING OUT ///////////////////////////////
+Model.prototype.signout = function(){ //doesn't seem to refresh the page
+    console.log("goodbye");
+    var that = this;
+    var ajax = $.ajax("/signout", {
+        type: "GET", 
+        dataType: "json",
+        contentType: "application/json"
+    });
+    ajax.done(that.view.onSignOut.bind(that.view));
 };
-
-
 
 
 
@@ -230,7 +247,6 @@ Game.prototype.clearObject = function(){
     this.id = "";
     this.ourScore = "";
     this.theirScore = "";
-    this.model.view.clearAddGameModule();
 };
 
 
