@@ -72,7 +72,7 @@ passport.deserializeUser(function(user, done) {
     /* Handle Logout */
   app.get('/signout', function(req, res) {
     req.logout();
-    res.redirect('/');
+    res.redirect('/'); //send a normal result back instead and locally destroy the session in passport
   });
     
 /////// GET LIST OF USERS////////////
@@ -203,7 +203,7 @@ passport.deserializeUser(function(user, done) {
   app.delete("/games/:id", function(req, res){
     var _id=req.params.id;
     Games.delete = function(_id, callback, errback){
-      Games.findOneAndRemove({_id:_id}, function(err, item){
+      Games.findOneAndRemove({_id:_id}, function(err, game){
         if(err){
           errback(err);
           return;

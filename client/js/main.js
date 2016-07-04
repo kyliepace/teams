@@ -14,7 +14,14 @@ $(document).ready(function(){
   game.model = model;
   game.view = view;
   
- 
+  model.getGames();
+  
+  view.games.on("click", ".deleteGame", function(){
+        view.idToDelete = $(this).siblings(".gameId").text();
+        console.log(view.idToDelete);
+        model.deleteGame(view.idToDelete);
+        $(this).parent(".game").remove();
+    });
   
   //view.game.on("click", view.submitAddGame, game.addGame.bind(game));
 });

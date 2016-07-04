@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-//mongoose.connect('mongodb://<dbuser>:<dbpassword>@ds021994.mlab.com:21994/teams');
+//mongoose.connect('mongodb://kyliepace:poland07@ds021994.mlab.com:21994/teams');
+
 mongoose.connect("mongodb://localhost/mongo_data");
 mongoose.connection.on('error', function(err) {
     console.error('Could not connect.  Error:', err);

@@ -97,6 +97,17 @@ section {
   margin-top: 0;
   height: 20px;
 }
+.game .deleteGame {
+  background-color: #FEF5E8;
+  color: #133582;
+  transform: translateZ(0);
+}
+.game .deleteGame:hover {
+  transform: scale(1.2);
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+}
 #next {
   min-height: 300px;
 }
@@ -138,6 +149,16 @@ section {
   margin-top: 10px;
   padding-left: 5px;
   font-family: 'Montserrat', sans-serif;
+}
+#addGameModule div #submitAddGame {
+  transform: translateZ(0);
+  transition-duration: 0.3s;
+}
+#addGameModule div #submitAddGame:hover {
+  transform: scale(1.2);
+  animation-durations: 0.3s;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
 }
 .pika-single {
   z-index: 9999;
