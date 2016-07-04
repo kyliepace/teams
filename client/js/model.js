@@ -29,7 +29,7 @@ Model.prototype.onGetUsersDone = function(users) {
             console.log(foundUser); //what's saved on the server
         }
     });
-    that.authUser.role = foundUser.role; 
+    
     if (!foundUser.password){ //if user doesn't have a password yet, update the record with whatever they typed in input
         var user = {"_id": foundUser._id, "password": that.view.passwordVal} ;
         var ajax = $.ajax('/users/'+foundUser._id, {
@@ -38,7 +38,11 @@ Model.prototype.onGetUsersDone = function(users) {
             dataType: 'json',
             contentType: 'application/json'
         });
-        ajax.done(that.view.onNewUserLogIn.bind(that.view)); //notify the user that their password has been saved and they are signed in
+        ajax.done(function(response){
+            that.view.onNewUserLogIn();
+            that.authUser.role = response.role;
+            console.log(that.authUser.role);
+        });
     }
     else{
         var userLoggingIn = ({'username': that.view.usernameVal, 'password': that.view.passwordVal});
@@ -52,7 +56,9 @@ Model.prototype.onGetUsersDone = function(users) {
         ajax2.done(function(response){
             console.log(response.status);
             if(response.status === "success"){
-                that.view.showLoggedIn(); 
+                that.view.showLoggedIn();
+                that.authUser.role = foundUser.role; 
+                console.log(that.authUser.role);
             }
             else{
                 that.view.notLoggedIn();
@@ -98,7 +104,8 @@ Model.prototype.getGames = function(){
         games.forEach(function(game){
             that.game.saveGame(game); //saves Game object and pushes game to proper place on page
         });
-        that.view.addToUpcomingGames();
+        that.sortUpcomingGames();
+        console.log(that.upcomingGames);
     });
 };
 
@@ -118,7 +125,10 @@ Model.prototype.addGame = function() {
         dataType: 'json',
         contentType: 'application/json'
     });
-    ajax.done(that.game.saveGame.bind(that.game));
+    ajax.done(function(){
+        that.game.saveGame.bind(that.game);
+        that.sortUpcomingGames();
+    });
 };
 Model.prototype.updateGames = function(){
     var that = this;
@@ -128,24 +138,19 @@ Model.prototype.updateGames = function(){
    }
    else{
        that.upcomingGames.push(game);
-       that.sortUpcomingGames();
+       //that.game.clearObject();
    }
 };
 Model.prototype.sortUpcomingGames = function(){
     var that = this;
     this.upcomingGames.sort(function(a, b){
-        return a>b ? -1 : a<b ? 1 : 0; //returns games from most recent
+        var dateC = new Date(a.date);
+        var dateD = new Date(b.date);
+        return dateC > dateD ? 1 : -1;  
     });
     console.log(this.upcomingGames);
-    if(this.upcomingGames[0].date === this.game.date){
-        console.log("added game is the newest game");
-        that.view.showNextGame();
-    }
-    else{
-        //that.view.addToUpcomingGames();
-        console.log("add to upcoming games");
-    }
-    that.game.clearObject();
+    that.view.showNextGame();
+    that.view.addToUpcomingGames();
 };
 
 ///////////// EDIT AND DELETE GAMES /////////////////
@@ -193,7 +198,6 @@ Game.prototype.saveGame = function(game){
     this.opponent = game.opponent;
     this.date = game.date;
     console.log(game.date);
-    this.time = game.time;
     this.location = game.location;
     this.id = game._id;
     if(game.ourScore !== undefined){
@@ -207,6 +211,12 @@ Game.prototype.saveGame = function(game){
     }
     else{
         this.theirScore = "";
+    }
+    if(game.time !== undefined){
+        this.time = game.time;
+    }
+    else{
+        this.time = "";
     }
     this.model.updateGames();
 };

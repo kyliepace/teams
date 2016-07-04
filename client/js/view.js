@@ -32,11 +32,11 @@ var View = function(){
     this.submitNewUser = $("#submitNewUser");
     this.submitNewUser.on("click", this.updateNewInputValues.bind(this));
     this.games = $(".games");
+    this.deleteGameButton = $(".deleteGame");
     this.pastGames = $("#past .games");
     this.nextGame = $("#next .games");
     this.upcomingGames = $("#upcoming .games");
     this.map = $("#map");
-    //click on existing game to model.editGame
 };
 
 ////////// [[[[[[[[[ LOGGING ING ]]]]]]]]]] //////////
@@ -65,9 +65,9 @@ View.prototype.showLoggedIn = function(){
     this.submitLogin.addClass("hidden");
     this.addUserButton.removeClass("hidden"); //make this a condition of authUser.role
     this.addGameButton.removeClass("hidden");
-    //if(this.model.authUser.role === "manager"){
-      //  that.deleteGameButton.removeClass("hidden");
-    //}
+    if(this.model.authUser.role === "manager"){
+       $(".deleteGame").removeClass("hidden");
+    }
 };
 
 View.prototype.notLoggedIn = function(){
@@ -79,8 +79,7 @@ View.prototype.showAddGameModule = function(){
     $('#addGameModule #datepicker').pikaday({ 
         firstDay: 1,
         onSelect: function() {
-            that.addGameDate = document.createTextNode(this.getMoment().format("MM/DD/YYYY")); //view.addGameDate should be a moment
-            console.log(that.addGameDate);
+            document.createTextNode(this.getMoment().format("MM/DD/YYYY")); //view.addGameDate should be a moment
             that.gameDate = this.getMoment().format("MM/DD/YYYY");
             console.log(that.gameDate);
         }
@@ -115,7 +114,6 @@ View.prototype.userAdded = function() {
 View.prototype.updateGameValues = function(){
     console.log("let's check what's been input");
     this.addGameOpponent = document.getElementById("opponentInput").value;
-    console.log(typeof(this.addGameDate));
     this.addGameTime = document.getElementById("timeInput").value;
     this.addGameLocation = document.getElementById("locationInput").value;
     var that = this;
@@ -150,7 +148,6 @@ View.prototype.showNextGame = function(){ //use this.model.upcomingGames array. 
     var that = this;
     this.nextGame.prepend(that.makeTemplate(that.model.upcomingGames[0].opponent, that.model.upcomingGames[0].date, that.model.upcomingGames[0].time, that.model.upcomingGames[0].location, "", "", that.model.upcomingGames[0].id));
     this.updateMap();
-    this.updateGames();
 };
 View.prototype.addToUpcomingGames = function(){
     var that = this;
@@ -159,13 +156,11 @@ View.prototype.addToUpcomingGames = function(){
         that.upcomingGames.append(that.makeTemplate(that.model.upcomingGames[i].opponent, that.model.upcomingGames[i].date, that.model.upcomingGames[i].time, that.model.upcomingGames[i].location, " ", " ", that.model.upcomingGames[i].id));
     }
     this.addGameModule.addClass("hidden");
-    this.updateGames();
 };
 View.prototype.showPastGame = function(){
     var that = this;
     this.pastGames.append(that.makeTemplate(that.model.game.opponent, that.model.game.date, that.model.game.time, that.model.game.location, that.model.game.ourScore, that.model.game.theirScore, that.model.game.id));
     this.model.game.clearObject();
-    this.updateGames();
 };
 //e.g. "https://maps.googleapis.com/maps/api/staticmap?center=Sacramento,+CA&maptype=terrain&visual_refresh=true&scale=2&size=4000x300&markers=size:small%7Ccolor:0xff0000%7Clabel:1%7CSacramento&zoom=13"
 View.prototype.makeMapUrl = function(){
@@ -182,22 +177,18 @@ View.prototype.updateMap = function(){
     var that = this;
     this.staticMap = {
         base:"https://maps.googleapis.com/maps/api/staticmap?",
-        center: that.model.game.location.replace(" ","+"),
+        center: that.model.game.location.replace(/ /g, '+'),
         maptype:"terrain",
         visual_refresh:"true",
         scale:"2",
         size:"4000x300",
         markers: "size:small%7Ccolor:0xff0000%7C",
-        label : that.model.game.location.replace(" ", "+"),
+        label : that.model.game.location.replace(/ /g, '+'),
         zoom :13
     };
     console.log(that.model.game.location);
     console.log(this.staticMap.center);
     this.makeMapUrl(); //combine static map components into a url and use as the map background
-};
-View.prototype.updateGames = function(){
-  this.deleteGameButton = $(".deleteGame");
-  this.deleteGameButton.removeClass("hidden");
 };
 //////////////// EDITING AND DELETING GAMES ///////////////////
 View.prototype.editGame = function(game){
@@ -210,11 +201,6 @@ View.prototype.onSignOut = function(){
     this.addGameButton.addClass("hidden");
     this.logout.addClass("hidden");
     this.login.removeClass("hidden");
-};
-View.prototype.deleteGame = function(){
-    console.log(this.idToDelete);
-    this.model.deleteGame(this.idToDelete);
-    this.idToDelete.parent(".game").remove();
 };
 
 /*  Would be nice to have an autocomplete in the addGameModule
