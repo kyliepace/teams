@@ -148,6 +148,10 @@ passport.deserializeUser(function(user, done) {
       //1. define updateUser function
         Users.updateUser = function(id, password, callback, errback){
             Users.findById(id, function(err, user){
+              if(err){
+                errback(err);
+                return;
+              }
               user.update({password: password}, function(err, user){ 
                 if (err){
                   errback(err);

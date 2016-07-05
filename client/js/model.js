@@ -21,6 +21,7 @@ Model.prototype.checkUser = function() {
 Model.prototype.onGetUsersDone = function(users) { 
     var that = this;
     var foundUser = {};
+    console.log(users);
     console.log(this.view.usernameVal);
     users.forEach(function(user){
         if (user.username === that.view.usernameVal){
@@ -30,7 +31,7 @@ Model.prototype.onGetUsersDone = function(users) {
     });
     
     if (!foundUser.password){ //if user doesn't have a password yet, update the record with whatever they typed in input
-        var user = {"_id": foundUser._id, "password": that.view.passwordVal} ;
+        var user = {"_id": foundUser._id, "password": that.view.passwordVal};
         var ajax = $.ajax('/users/'+foundUser._id, {
             type: 'PUT',
             data: JSON.stringify(user),
@@ -52,7 +53,7 @@ Model.prototype.onGetUsersDone = function(users) {
             dataType: 'json',
             contentType: 'application/json'
         });
-        ajax2.done(function(response){
+        ajax2.done(function(response, err){
             console.log(response.status);
             if(response.status === "success"){
                 that.authUser.role = foundUser.role; 
@@ -95,7 +96,7 @@ Model.prototype.getGames = function(){
         });
         that.sortUpcomingGames();
         console.log(that.upcomingGames);
-        $(".deleteGame").addClass("hidden");
+        $(".material-icons.deleteGame").css("font-size", "0px");
     });
 };
 

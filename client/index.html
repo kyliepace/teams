@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="/css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Sriracha" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-    <!--<link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.css">-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.css" rel="stylesheet">
     
   </head>
   <body>
@@ -56,12 +57,11 @@
             <input class=\"hidden theirScore\"\
           </div>
          <p class="hidden gameId">id</p>
-          <input class=\"hidden deleteGame\" value = "X" type="button">
-          
+         <i class="material-icons deleteGame">clear</i>
         </div>"
         -->
         <div id="addGameButton" class="hidden">
-          <img  src="https://cdn3.iconfinder.com/data/icons/eldorado-stroke-player/40/button_new_2-128.png"/>
+          <i class="material-icons">add_box</i>
         </div>
         
         <!-- ADD GAME MODULE -->
@@ -72,7 +72,7 @@
           <input id="datepicker" placeholder="date">
           <input id="timeInput" placeholder="time">
           <input id="locationInput" placeholder="location">
-          <div id="submitAddGame"><p>+</p></div>
+          <i id = "submitAddGame" class="material-icons">add_box</i>
           </div>
         </div>
         
@@ -141,6 +141,7 @@
     <script src="/js/model.js"></script>
     <script src="/js/view.js"></script>
     <script src="/js/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.js"></script>
     <script src="/js/pikaday.js"></script>
     <script src="/js/pikaday-plugin.js"></script>
     

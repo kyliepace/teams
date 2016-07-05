@@ -31,7 +31,6 @@ var View = function(){
     this.submitNewUser = $("#submitNewUser");
     this.submitNewUser.on("click", this.updateNewInputValues.bind(this));
     this.games = $(".games");
-    this.deleteGameButton = $(".deleteGame");
     this.pastGames = $("#past .games");
     this.nextGame = $("#next .games");
     this.upcomingGames = $("#upcoming .games");
@@ -64,7 +63,7 @@ View.prototype.showLoggedIn = function(){
     this.submitLogin.addClass("hidden");
     this.addGameButton.removeClass("hidden");
     if(this.model.authUser.role === "manager"){
-       $(".deleteGame").removeClass("hidden");
+       $(".material-icons.deleteGame").css("font-size", "24px");
        that.addUserButton.removeClass("hidden");
     }
 };
@@ -76,6 +75,10 @@ View.prototype.showAddGameModule = function(){
     console.log("add a game");
     this.addGameModule.toggleClass("hidden");
     var that = this;
+    $("#timeInput").timepicker();
+    $("#timeInput").on("changeTime", function(){
+        that.gameTime =$(this).val();
+    });
     $('#addGameModule #datepicker').pikaday({ 
         firstDay: 1,
         onSelect: function() {
@@ -105,7 +108,7 @@ View.prototype.updateNewInputValues = function(){
 View.prototype.userAdded = function() {
     console.log("added user");
     this.toggleAddUser();
-    this.addUsernameVal.value("");
+    document.getElementById("newUsername").value("");
 };
 
 
@@ -113,7 +116,7 @@ View.prototype.userAdded = function() {
 View.prototype.updateGameValues = function(){
     console.log("let's check what's been input");
     this.addGameOpponent = document.getElementById("opponentInput").value;
-    this.addGameTime = document.getElementById("timeInput").value;
+    //this.addGameTime = document.getElementById("timeInput").value;
     this.addGameLocation = document.getElementById("locationInput").value;
     var that = this;
     if(this.addGameOpponent !== "" || this.gameDate.toString() !== "" || this.addGameTime !== "" || this.addGameLocation !== ""){
@@ -142,7 +145,7 @@ View.prototype.makeTemplate = function(opponent, date, time, location, ourScore,
           <p class=\"location\">"+location+"</p><input class=\"hidden location\"><div class=\"scores\">\
         <p class=\"ourScore\">"+ourScore+"</p><input class=\"hidden ourScore\"><p class=\"theirScore\">"+theirScore+"</p><input class=\"hidden theirScore\"></div>\
           <p class=\"hidden gameId\">"+id+"</p>\
-          <input class=\"deleteGame\" value = \"X\" type=\"button\">";
+          <i class=\"material-icons deleteGame\">clear</i></div>";
 };
 View.prototype.showNextGame = function(){ //use this.model.upcomingGames array. 0th position goes into next game space, the rest get arranged in the upcoming game space
     var that = this;
@@ -155,7 +158,7 @@ View.prototype.addToUpcomingGames = function(){
     this.upcomingGames.empty();
     var that = this;
     console.log("adding to upcoming games");
-    for (var i = 1; i<that.model.upcomingGames.length; i++){
+    for (var i = 0; i<that.model.upcomingGames.length; i++){
         that.upcomingGames.append(that.makeTemplate(that.model.upcomingGames[i].opponent, that.model.upcomingGames[i].date, that.model.upcomingGames[i].time, that.model.upcomingGames[i].location, " ", " ", that.model.upcomingGames[i].id));
     }
     
@@ -203,13 +206,14 @@ View.prototype.onSignOut = function(){
     document.getElementById("username").value = "";
     document.getElementById("password").value = "";
     document.getElementById("newUsername").value="";
-    $(".deleteGame").addClass("hidden");
+    $("material-icons.deleteGame").css("font-size", "0px");
     this.addUserButton.addClass("hidden");
     this.addGameButton.addClass("hidden");
     this.addUsername.addClass("hidden");
     this.addUserRole.addClass("hidden");
     this.logout.addClass("hidden");
     this.login.removeClass("hidden");
+    this.message.text("");
 };
 
 /*  Would be nice to have an autocomplete in the addGameModule
