@@ -99,6 +99,10 @@ section {
   margin: auto;
   color: #FEF5E8;
 }
+.game a {
+  color: #FEF5E8;
+  text-decoration: none;
+}
 .game p {
   margin-bottom: 3px;
 }

@@ -106,8 +106,8 @@ Model.prototype.addGame = function() {
     console.log("adding game");
     var that = this;
     console.log(that.view.gameDate);
-    var game = ({'opponent': that.view.addGameOpponent, "date": that.view.gameDate, "time": that.view.addGameTime, "location":that.view.addGameLocation});
-    //this.games.push(game);
+    var game = ({'opponent': that.view.addGameOpponent, "date": that.view.gameDate, "time": that.view.gameTime, "location":that.view.addGameLocation});
+  
     var ajax = $.ajax('/games', {
         type: 'POST',
         data: JSON.stringify(game),

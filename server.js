@@ -224,8 +224,7 @@ passport.deserializeUser(function(user, done) {
     });
   });
 
-
-
+exports.app = app;
 
 
 /////[][][][][][][][][][][][][][][][][] run server [][][][][][][][][][][][][][][][]

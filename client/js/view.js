@@ -116,10 +116,9 @@ View.prototype.userAdded = function() {
 View.prototype.updateGameValues = function(){
     console.log("let's check what's been input");
     this.addGameOpponent = document.getElementById("opponentInput").value;
-    //this.addGameTime = document.getElementById("timeInput").value;
     this.addGameLocation = document.getElementById("locationInput").value;
     var that = this;
-    if(this.addGameOpponent !== "" || this.gameDate.toString() !== "" || this.addGameTime !== "" || this.addGameLocation !== ""){
+    if(this.addGameOpponent !== "" || this.gameDate.toString() !== "" || this.gameTime !== "" || this.addGameLocation !== ""){
         console.log("something's been added");
         that.model.addGame();
     }
@@ -139,18 +138,18 @@ View.prototype.clearAddGameModule = function(){
 
 //////////////// ARRANGING GAMES ON DOM///////////////
 View.prototype.makeTemplate = function(opponent, date, time, location, ourScore, theirScore, id){
-    return "<div class=\"game\"><p class=\"opponent\">"+opponent+"</p><input class=\"hidden opponent\" type=\"text\">\
+    return "<div class=\"game\" title=\"directions\"><a href=\"https://www.google.com/maps/dir//"+location+"target=\"_blanck\"><p class=\"opponent\">"+opponent+"</p><input class=\"hidden opponent\" type=\"text\">\
           <p class=\"date\">"+date+"</p><input id=\"datepicker\" class=\"hidden date\">\
           <p class=\"time\">"+time+"</p><input class=\"hidden time\">\
           <p class=\"location\">"+location+"</p><input class=\"hidden location\"><div class=\"scores\">\
-        <p class=\"ourScore\">"+ourScore+"</p><input class=\"hidden ourScore\"><p class=\"theirScore\">"+theirScore+"</p><input class=\"hidden theirScore\"></div>\
+        <p class=\"ourScore\">"+ourScore+"</p><input class=\"hidden ourScore\"><p class=\"theirScore\">"+theirScore+"</p><input class=\"hidden theirScore\"></div></a>\
           <p class=\"hidden gameId\">"+id+"</p>\
           <i class=\"material-icons deleteGame\">clear</i></div>";
 };
 View.prototype.showNextGame = function(){ //use this.model.upcomingGames array. 0th position goes into next game space, the rest get arranged in the upcoming game space
     var that = this;
     this.nextGame.children(".game").remove();
-    this.nextGame.prepend(that.makeTemplate(that.model.upcomingGames[0].opponent, that.model.upcomingGames[0].date, that.model.upcomingGames[0].time, that.model.upcomingGames[0].location, "", "", that.model.upcomingGames[0].id));
+    this.nextGame.prepend(that.makeTemplate(that.model.upcomingGames[0].opponent, that.model.upcomingGames[0].date, that.model.upcomingGames[0].time, that.model.upcomingGames[0].location.replace(/ /,"+"), "", "", that.model.upcomingGames[0].id));
     
     this.updateMap();
 };
@@ -161,7 +160,6 @@ View.prototype.addToUpcomingGames = function(){
     for (var i = 0; i<that.model.upcomingGames.length; i++){
         that.upcomingGames.append(that.makeTemplate(that.model.upcomingGames[i].opponent, that.model.upcomingGames[i].date, that.model.upcomingGames[i].time, that.model.upcomingGames[i].location, " ", " ", that.model.upcomingGames[i].id));
     }
-    
 };
 View.prototype.showPastGame = function(){
     var that = this;
