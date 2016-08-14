@@ -1,8 +1,20 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-mongoose.connect('mongodb://kyliepace:poland07@ds021994.mlab.com:21994/teams');
+//mongoose.connect('mongodb://kyliepace:poland07@ds021994.mlab.com:21994/teams');
+
+var uristring =
+    process.env.MONGOLAB_URI ||
+    process.env.MONGOHQ_URL ||
+    'mongodb://localhost/mongo_data';
 
 //mongoose.connect("mongodb://localhost/mongo_data");
+mongoose.connect(uristring, function (err, res) {
+      if (err) {
+      console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+      } else {
+      console.log ('Succeeded connected to: ' + uristring);
+      }
+    });
 mongoose.connection.on('error', function(err) {
     console.error('Could not connect.  Error:', err);
 });
