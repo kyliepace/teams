@@ -177,6 +177,7 @@ View.prototype.updateMap = function(){
         visual_refresh:"true",
         scale:"2",
         size:"4000x300",
+        key: "AIzaSyC2fIsU3BE1FtGxOVoApV-qE33U0d01dzo",
         markers: "size:small%7Ccolor:0xff0000%7C",
         label : that.model.upcomingGames[0].location.replace(/ /g, '+'),
         zoom :13
@@ -188,7 +189,7 @@ View.prototype.updateMap = function(){
 //e.g. "https://maps.googleapis.com/maps/api/staticmap?center=Sacramento,+CA&maptype=terrain&visual_refresh=true&scale=2&size=4000x300&markers=size:small%7Ccolor:0xff0000%7Clabel:1%7CSacramento&zoom=13"
 View.prototype.makeMapUrl = function(){
     var that = this;
-    this.staticMap.url = that.staticMap.base+"center="+that.staticMap.center+"&maptype="+this.staticMap.terrain+"&visual_refresh="+this.staticMap.visual_refresh+"&scale="+this.staticMap.scale+"&size="+this.staticMap.size+"&markers="+this.staticMap.markers+"label:"+this.staticMap.label+"&zoom="+this.staticMap.zoom;
+    this.staticMap.url = that.staticMap.base+"center="+that.staticMap.center+"&key="+this.staticMap.key+"&maptype="+this.staticMap.terrain+"&visual_refresh="+this.staticMap.visual_refresh+"&scale="+this.staticMap.scale+"&size="+this.staticMap.size+"&markers="+this.staticMap.markers+"label:"+this.staticMap.label+"&zoom="+this.staticMap.zoom;
     console.log(that.staticMap.url);
     this.map.css("background-image", "url("+that.staticMap.url+")"); //change the background
     $("#mapLink").attr("href", "https://www.google.com/maps/dir//"+that.staticMap.center); //add a link
