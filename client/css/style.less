@@ -23,7 +23,6 @@ body{
 h4{
     font-size: @h4-size;
 }
-
 .hidden{
     display:none;
 }
@@ -95,7 +94,20 @@ header{
         margin: 0;
     }
 }
-
+#instructions{
+    h2{
+        padding-top: 20px;
+    }
+    margin: 30px auto;
+    background-color: @color1;
+    color: @color2;
+    width: 70%;
+    max-width: 900px;
+    video{
+        width: 90%;
+    }
+    font-family: @font2;
+}
 section{
     text-align: @page-align;
     line-height: @line-height;
@@ -475,29 +487,3 @@ section{
     color: @color1;
     text-decoration: none;
 }
-
-/////////////////////   ROSTER     //////////////////////////
-#roster{
-    min-height: 200px;
-}
-
-#players{
-    display: flex;
-    justify-content: center;
-    max-width: 1000px;
-    margin: auto;
-    .player{
-        display: flex;
-        align-items: center;
-        max-width: 50%;
-        padding-right: 10px;
-        padding-left: 10px;
-        height: 13px;
-        border-right: @gameBorder;
-        i{
-            font-size: 10px;
-        }
-    }
-}
-
-

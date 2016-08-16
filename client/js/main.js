@@ -1,7 +1,4 @@
-//var Model = require("./model.js");
-
 $(document).ready(function(){
-  
   var view = new View();
   var model = new Model();
   var authUser = new AuthUser();
@@ -34,6 +31,4 @@ $(document).ready(function(){
         model.deleteGame(view.idToDelete);
         $(this).parent(".game").remove();
     });
-
 });
-

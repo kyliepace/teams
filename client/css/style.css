@@ -76,6 +76,20 @@ header div select {
 header h1 {
   margin: 0;
 }
+#instructions {
+  margin: 30px auto;
+  background-color: #133582;
+  color: #FEF5E8;
+  width: 70%;
+  max-width: 900px;
+  font-family: 'Montserrat', sans-serif;
+}
+#instructions h2 {
+  padding-top: 20px;
+}
+#instructions video {
+  width: 90%;
+}
 section {
   text-align: center;
   line-height: 12px;
@@ -420,24 +434,4 @@ section {
   color: #133582;
   text-decoration: none;
 }
-#roster {
-  min-height: 200px;
-}
-#players {
-  display: flex;
-  justify-content: center;
-  max-width: 1000px;
-  margin: auto;
-}
-#players .player {
-  display: flex;
-  align-items: center;
-  max-width: 50%;
-  padding-right: 10px;
-  padding-left: 10px;
-  height: 13px;
-  border-right: 2px dashed #FEF5E8;
-}
-#players .player i {
-  font-size: 10px;
-}
+/*# sourceMappingURL=style.css.map */

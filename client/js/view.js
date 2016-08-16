@@ -2,24 +2,22 @@ var View = function(){
     this.model;
     this.upcomingGamesDiv = $('#upcoming .games');
     this.game = $(".game");
-   
     this.addGameButton = $('#addGameButton');
     this.addGameButton.on("click", this.showAddGameModule.bind(this));
     this.addGameModule = $("#addGameModule");
-    
     this.submitAddGame = $("#submitAddGame");
     this.submitAddGame.on("click", this.updateGameValues.bind(this));
-    
     this.login = $("header div h5.login");
     this.login.on("click", this.toggleLogin.bind(this));
     this.logout = $("header div h5.logout");
-    
     this.username = $("#username");
     this.password = $("#password");
     this.submitLogin = $('#submitLogin');
     this.submitLogin.on('click', this.updateInputValues.bind(this)); 
     this.passwordInput = $("header div .login");
-    
+    this.instructionCall = $("header div h5.instructions");
+    this.instructions = $("#instructions");
+    this.instructionCall.on("click", this.toggleInstructions.bind(this));
     this.message = $("#message");
     this.addUsername = $("header input.addUserInput");
     this.addUserRole = $("header select");
@@ -27,7 +25,6 @@ var View = function(){
     this.addUserButton.on("click", this.toggleAddUser.bind(this)); 
     this.addGameOpponent = document.getElementById("opponentInput").value;
     this.addGameTime = document.getElementById("timeInput").value;
-    
     this.submitNewUser = $("#submitNewUser");
     this.submitNewUser.on("click", this.updateNewInputValues.bind(this));
     this.games = $(".games");
@@ -93,8 +90,9 @@ View.prototype.onNewUserLogIn = function() {
     this.message.text("Welcome! Your password has been saved"); //notify that password has been saved
     this.showLoggedIn();
 };
-
-
+View.prototype.toggleInstructions = function(){
+    this.instructions.toggleClass("hidden");
+};
 //////////// ADDING A NEW USER /////////////////////////////////////////////////
 View.prototype.toggleAddUser = function(){
     this.addUsername.toggleClass("hidden");
@@ -111,30 +109,22 @@ View.prototype.userAdded = function() {
     document.getElementById("newUsername").value("");
 };
 
-
 /////////////// ADDING A NEW GAME /////////////////////////
 View.prototype.updateGameValues = function(){
-    console.log("let's check what's been input");
     this.addGameOpponent = document.getElementById("opponentInput").value;
     this.addGameLocation = document.getElementById("locationInput").value;
     var that = this;
     if(this.addGameOpponent !== "" || this.gameDate.toString() !== "" || this.gameTime !== "" || this.addGameLocation !== ""){
-        console.log("something's been added");
         that.model.addGame();
-    }
-    else{
-        console.log("nothing's been added");
     }
     this.addGameModule.addClass("hidden");
 };
 View.prototype.clearAddGameModule = function(){
-    console.log("clearing Game Module");
     document.getElementById("timeInput").value = "";
     document.getElementById("opponentInput").value = "";
     document.getElementById("locationInput").value = "";
     document.getElementById("datepicker").value = "";
 };
-
 
 //////////////// ARRANGING GAMES ON DOM///////////////
 View.prototype.makeTemplate = function(opponent, date, time, location, ourScore, theirScore, id){
@@ -150,13 +140,11 @@ View.prototype.showNextGame = function(){ //use this.model.upcomingGames array. 
     var that = this;
     this.nextGame.children(".game").remove();
     this.nextGame.prepend(that.makeTemplate(that.model.upcomingGames[0].opponent, that.model.upcomingGames[0].date, that.model.upcomingGames[0].time, that.model.upcomingGames[0].location.replace(/ /,"+"), "", "", that.model.upcomingGames[0].id));
-    
     this.updateMap();
 };
 View.prototype.addToUpcomingGames = function(){
     this.upcomingGames.empty();
     var that = this;
-    console.log("adding to upcoming games");
     for (var i = 0; i<that.model.upcomingGames.length; i++){
         that.upcomingGames.append(that.makeTemplate(that.model.upcomingGames[i].opponent, that.model.upcomingGames[i].date, that.model.upcomingGames[i].time, that.model.upcomingGames[i].location, " ", " ", that.model.upcomingGames[i].id));
     }
@@ -165,7 +153,6 @@ View.prototype.showPastGame = function(){
     var that = this;
     this.pastGames.append(that.makeTemplate(that.model.game.opponent, that.model.game.date, that.model.game.time, that.model.game.location, that.model.game.ourScore, that.model.game.theirScore, that.model.game.id));
     this.model.game.clearObject();
-    
 };
 
 View.prototype.updateMap = function(){
@@ -182,15 +169,12 @@ View.prototype.updateMap = function(){
         label : that.model.upcomingGames[0].location.replace(/ /g, '+'),
         zoom :13
     };
-    console.log(that.model.upcomingGames[0].location);
-    console.log(this.staticMap.center);
     this.makeMapUrl(); //combine static map components into a url and use as the map background
 };
 //e.g. "https://maps.googleapis.com/maps/api/staticmap?center=Sacramento,+CA&maptype=terrain&visual_refresh=true&scale=2&size=4000x300&markers=size:small%7Ccolor:0xff0000%7Clabel:1%7CSacramento&zoom=13"
 View.prototype.makeMapUrl = function(){
     var that = this;
     this.staticMap.url = that.staticMap.base+"center="+that.staticMap.center+"&key="+this.staticMap.key+"&maptype="+this.staticMap.terrain+"&visual_refresh="+this.staticMap.visual_refresh+"&scale="+this.staticMap.scale+"&size="+this.staticMap.size+"&markers="+this.staticMap.markers+"label:"+this.staticMap.label+"&zoom="+this.staticMap.zoom;
-    console.log(that.staticMap.url);
     this.map.css("background-image", "url("+that.staticMap.url+")"); //change the background
     $("#mapLink").attr("href", "https://www.google.com/maps/dir//"+that.staticMap.center); //add a link
 };
@@ -201,30 +185,16 @@ View.prototype.editGame = function(game){
 };
 
 View.prototype.onSignOut = function(){
-    console.log("logged out");
     document.getElementById("username").value = "";
     document.getElementById("password").value = "";
     document.getElementById("newUsername").value="";
     $("material-icons.deleteGame").css("font-size", "0px");
     this.addUserButton.addClass("hidden");
     this.addGameButton.addClass("hidden");
+    this.addGameModule.addClass("hidden");
     this.addUsername.addClass("hidden");
     this.addUserRole.addClass("hidden");
     this.logout.addClass("hidden");
     this.login.removeClass("hidden");
     this.message.text("");
 };
-
-/*  Would be nice to have an autocomplete in the addGameModule
-Model.prototype.mapAutocomplete = function(input){
-    var defaultBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(37.8000, -120.0000),
-        new google.maps.LatLng(39.0000, -123.0000));
-
-    var searchBox = new google.maps.places.SearchBox(input, {
-    bounds: defaultBounds
-    });
-};
-*/
-
-

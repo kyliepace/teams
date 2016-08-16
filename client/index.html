@@ -32,38 +32,25 @@
         </div>
         
         <h1>GO TEAMNAME!</h1>
-      
     </header>
+    <!-- INSTRUCTIONS -->
+    <section>
+      <div id="instructions" class="hidden">
+        <h2>Demo Instructions</h2>
+        <p>Log in with any characters.</p>
+        <p>Add a game by clicking the blue plus sign on the right of the screen</p>
+        <p>Delete games by clicking the x in each game box</p>
+        <video name="instructions" src="./img/instructions.mov" autoplay loop></video>
+      </div>
+    </section>
     
     <!--  ////////   NEXT GAME /////////////-->
-    
     <section id="next">
       <h4>Next Game</h4>
-      
       <div class="games">
-        <!--
-        <a href=""><div class=\"game\">
-          <p class=\"opponent\">"+opponent+"</p>
-          <input class=\"hidden opponent\" type=\"text\">\
-          <p class=\"date\">"+date+"</p><
-          input id=\"datepicker\" class=\"hidden date\">\
-          <p class=\"time\">"+time+"</p>
-          <input class=\"hidden time\">\
-          <p class=\"location\">"+location+"</p>
-          <input class=\"hidden location\">
-          <div class=\"scores\">\
-            <p class=\"ourScore\">"+ourScore+"</p>
-            <input class=\"hidden ourScore\"><p class=\"theirScore\">"+theirScore+"</p>
-            <input class=\"hidden theirScore\"\
-          </div>
-         <p class="hidden gameId">id</p>
-         <i class="material-icons deleteGame">clear</i>
-        </div></a>"
-        -->
         <div id="addGameButton" class="hidden">
           <i class="material-icons">add_box</i>
         </div>
-        
         <!-- ADD GAME MODULE -->
         <div id="addGameModule" class="hidden">
           <h5>Add a Game</h5>
@@ -75,11 +62,8 @@
           <i id = "submitAddGame" class="material-icons">add_box</i>
           </div>
         </div>
-        
       </div>
     </section>
-    
-    
     <!--  /////// MAP /////////// -->
     <div id="mapOverlay">
     <a id = "mapLink" href="" target = "_blank">
@@ -89,53 +73,22 @@
     </a>
     </div>
     
-    <!-- ////// ROSTER ///////////// -->
-    <!--
-    <section id="roster">
-      <h4>Team Roster</h4>
-      
-        <div id="players">
-          <div class="player">
-            <h5>Player 1</h5>
-            <i class="fa fa-square-o" aria-hidden="true"></i>
-          </div>
-          
-          <div class="player">
-            <h5>Player 2</h5>
-            <p><i class="fa fa-square-o" aria-hidden="true"></i></p>
-          </div>
-          
-          <div class="player">
-            <h5>Player 3</h5>
-            <p><i class="fa fa-square-o" aria-hidden="true"></i></p>
-          </div>
-        
-      </div>
-    </section>
-    -->
-    
     <!-- //// UPCOMING GAMES //// -->
     <section id="upcoming">
       <h4>Upcoming Games</h4>
       <div class="games">
         <!-- append more games here -->
       </div>
-      
     </section>
-    
-    
+
     <!--  ///////// PAST GAMES ///////// -->
     <section id="past">
       <h4>Past Games</h4>
       <div class="games">
-        
         <!-- append more games here -->
-        
       </div>
     </section>
-    
-    
-    <!--<script src="/socket.io/socket.io.js"></script>-->
+
     <script src="/js/jquery.min.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/model.js"></script>
@@ -144,6 +97,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.js"></script>
     <script src="/js/pikaday.js"></script>
     <script src="/js/pikaday-plugin.js"></script>
-    
   </body>
 </html>

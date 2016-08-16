@@ -5,10 +5,8 @@ var Model = function() {
     this.upcomingGames = []; 
 };
 
-
 ///////////// LOGGING IN ///////////////////////////////////
 Model.prototype.checkUser = function() {
-    console.log(this.view.usernameVal);
     var that = this;
     if(this.username !== "" && this.password !== ""){
         var ajax = $.ajax('/users', {  //make a GET request to server and find the user with the given username
@@ -21,15 +19,12 @@ Model.prototype.checkUser = function() {
 Model.prototype.onGetUsersDone = function(users) { 
     var that = this;
     var foundUser = {};
-    console.log(users);
-    console.log(this.view.usernameVal);
     users.forEach(function(user){
         if (user.username === that.view.usernameVal){
             foundUser = user;
             console.log(foundUser); //what's saved on the server
         }
     });
-    
     if (!foundUser.password){ //if user doesn't have a password yet, update the record with whatever they typed in input
         var user = {"_id": foundUser._id, "password": that.view.passwordVal};
         var ajax = $.ajax('/users/'+foundUser._id, {
@@ -41,12 +36,10 @@ Model.prototype.onGetUsersDone = function(users) {
         ajax.done(function(response){
             that.view.onNewUserLogIn();
             that.authUser.role = response.role;
-            console.log(that.authUser.role);
         });
     }
     else{
         var userLoggingIn = ({'username': that.view.usernameVal, 'password': that.view.passwordVal});
-        console.log(userLoggingIn);
         var ajax2 = $.ajax('/login', {  //make a GET request to server to use passport strategy
             type: 'POST',
             data: JSON.stringify(userLoggingIn),
@@ -54,7 +47,6 @@ Model.prototype.onGetUsersDone = function(users) {
             contentType: 'application/json'
         });
         ajax2.done(function(response, err){
-            console.log(response.status);
             if(response.status === "success"){
                 that.authUser.role = foundUser.role; 
                 that.view.showLoggedIn();
@@ -70,7 +62,6 @@ Model.prototype.onGetUsersDone = function(users) {
 //////////////// ADDING USERS ///////////////////////////////////////
 Model.prototype.addUser = function() {
     var that = this;
-    console.log(this.view.addUsernameVal+" "+this.view.addUserRoleVal);
     var addUser = ({'username': this.view.addUsernameVal, 'role': this.view.addUserRoleVal});
     var ajax = $.ajax('/users', {
         type: 'POST',
@@ -81,11 +72,9 @@ Model.prototype.addUser = function() {
     ajax.done(that.view.userAdded.bind(that.view));
 };
 
-
 ////////////// GET SAVED GAMES ////////////////
 Model.prototype.getGames = function(){
     var that = this;
-    console.log("retrieving saved games");
     var ajax = $.ajax("/games", {
         type: "GET",
         dataType: "json"
@@ -95,19 +84,14 @@ Model.prototype.getGames = function(){
             that.game.saveGame(game); //saves Game object and pushes game to proper place on page
         });
         that.sortUpcomingGames();
-        console.log(that.upcomingGames);
         $(".material-icons.deleteGame").css("font-size", "0px");
     });
 };
 
-
 ////////[[[[[[[[[ ADD A GAME ]]]]]] //////////////////////////////
 Model.prototype.addGame = function() {
-    console.log("adding game");
     var that = this;
-    console.log(that.view.gameDate);
     var game = ({'opponent': that.view.addGameOpponent, "date": that.view.gameDate, "time": that.view.gameTime, "location":that.view.addGameLocation});
-  
     var ajax = $.ajax('/games', {
         type: 'POST',
         data: JSON.stringify(game),
@@ -115,7 +99,6 @@ Model.prototype.addGame = function() {
         contentType: 'application/json'
     });
     ajax.done(function(game){
-        console.log("game added");
         that.game.saveGame(game); //saves the game locally and calls model.updateGames()
         that.view.clearAddGameModule();
     });
@@ -143,7 +126,6 @@ Model.prototype.sortUpcomingGames = function(){
         var dateD = new Date(b.date);
         return dateC > dateD ? 1 : -1;  
     });
-    console.log(this.upcomingGames);
     that.view.showNextGame();
     that.view.addToUpcomingGames();
 };
@@ -151,7 +133,6 @@ Model.prototype.sortUpcomingGames = function(){
 ///////////// EDIT AND DELETE GAMES /////////////////
 Model.prototype.deleteGame = function(id){
     var that = this;
-    console.log(id);
     var ajax = $.ajax('/games/'+id, {
         type: 'DELETE',
         dataType: 'json'
@@ -159,8 +140,7 @@ Model.prototype.deleteGame = function(id){
     });
     ajax.done(function(game){
         console.log("removed from database");
-        if(game._id === that.upcomingGames[0].id){
-            console.log("we need a new next game");
+        if(game._id === that.upcomingGames[0].id){ //we've deleted the next game. let's pick the next in line to fill that spot
             that.upcomingGames.shift();
             that.view.showNextGame();
             that.view.addToUpcomingGames();
@@ -172,14 +152,8 @@ Model.prototype.deleteGame = function(id){
         }
     });
 };
-    
-/*Model.prototype.editGame= function(game) {
-    //toggleClass("hidden") to all the ps and the inputs in the selected game
-};*/
-
 ///////////////// SIGNING OUT ///////////////////////////////
 Model.prototype.signout = function(){ //doesn't seem to refresh the page
-    console.log("goodbye");
     var that = this;
     var ajax = $.ajax("/signout", {
         type: "GET", 
@@ -188,24 +162,14 @@ Model.prototype.signout = function(){ //doesn't seem to refresh the page
     });
     ajax.done(function(response){
         if(response.status === "goodbye"){
-            console.log("goodbye");
             that.view.onSignOut();
-        }
-        else{
-            console.log("not logged out");
         }
     });
 };
-
-
-
-
 //////////////// AUTH USER OBJECT ////////////////////
 var AuthUser = function(){
     this.role;    
 }
-
-
 ////////////////////// GAME OBJECT //////////////////////////////
 var Game = function(){
     this.model;
@@ -218,9 +182,7 @@ var Game = function(){
     this.theirScore;
     this.location;
 };
-
 Game.prototype.saveGame = function(game){
-    console.log("Game.saveGame");
     this.opponent = game.opponent;
     this.date = game.date;
     console.log(game.date);
@@ -246,7 +208,6 @@ Game.prototype.saveGame = function(game){
     }
     this.model.updateGames();
 };
-
 Game.prototype.clearObject = function(){
     console.log("clearing game object");
     this.opponent = "";
@@ -257,5 +218,3 @@ Game.prototype.clearObject = function(){
     this.ourScore = "";
     this.theirScore = "";
 };
-
-
