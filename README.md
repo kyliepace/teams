@@ -1,22 +1,9 @@
+Final project for Thinkful's node.js unit.
 
-     ,-----.,--.                  ,--. ,---.   ,--.,------.  ,------.
-    '  .--./|  | ,---. ,--.,--. ,-|  || o   \  |  ||  .-.  \ |  .---'
-    |  |    |  || .-. ||  ||  |' .-. |`..'  |  |  ||  |  \  :|  `--, 
-    '  '--'\|  |' '-' ''  ''  '\ `-' | .'  /   |  ||  '--'  /|  `---.
-     `-----'`--' `---'  `----'  `---'  `--'    `--'`-------' `------'
-    ----------------------------------------------------------------- 
+View your team's upcoming games.
 
+Managers can log in and post upcoming games. Users are managed as mongoose objects and saved in mongoDB. Passwords hashed with passport.js strategy. 
 
-Welcome to your Node.js project on Cloud9 IDE!
+Date and times are chosen from pikaday and jQuery timepicker plugins.
 
-This chat example showcases how to use `socket.io` with a static `express` server.
-
-## Running the server
-
-1) Open `server.js` and start the app by clicking on the "Run" button in the top menu.
-
-2) Alternatively you can launch the app from the Terminal:
-
-    $ node server.js
-
-Once the server is running, open the project in the shape of 'https://projectname-username.c9.io/'. As you enter your name, watch the Users list (on the left) update. Once you press Enter or Send, the message is shared with all connected clients.
+Location is sent to google maps to generate a static map of next game's location. Clicking on the map takes user to a map with directions to next game.
