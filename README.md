@@ -7,3 +7,5 @@ Managers can log in and post upcoming games. Users are managed as mongoose objec
 Date and times are chosen from pikaday and jQuery timepicker plugins.
 
 Location is sent to google maps to generate a static map of next game's location. Clicking on the map takes user to a map with directions to next game.
+
+<img src='./client/img/instructions.gif' />
